@@ -1,0 +1,15 @@
+/* #root {
+    min-width:  850px;
+} */
+
+
+.hell-yeah {
+    border-radius: 50%;
+    padding: 10px;
+    width: fit-content;
+    background-color: #e6e4e2;
+    cursor: pointer;
+  }
+
+
+  
