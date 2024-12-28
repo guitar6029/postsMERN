@@ -32,20 +32,23 @@ Example .env file content:
 
 env
 # .env
+
+```
 ATLAS_KEY=mongodb+srv://<username>:<password>@cluster0.mongodb.net/myDatabase?retryWrites=true&w=majority
 JWT_SECRET=your_secret_key_here
+```
 
 💻 To run the back end:
 
-\```
+```
 npm install
 npm run start
-\```
+```
 
 💻 To run the front end:
-\```
+```
 npm install
 npm run dev
-\```
+```
 These instructions should make it easy for fellow developers to get your project up and running. Great job on providing clear and concise guidance! 😊 🌟 If you have any further questions or need additional details, feel free to ask!
 
