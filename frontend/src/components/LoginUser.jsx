@@ -2,16 +2,37 @@ import { Link } from "react-router-dom";
 import { loginUser } from "../api/loginApi";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useReducer } from "react";
 import axios from "axios";
+import { useUserContext } from "../context/userContext";
 
 
 const LoginUser = () => {
 
 
-    const [isSubmitFormBtnDisabled, setSubmitFormBtnDisabled] = useState(false);
-    const [user, setUser] = useState({ email: "", password: "" });
+    const { setUserProperties } = useUserContext();
 
+    const initialState = {
+        isSubmitFormBtnDisabled: false,
+        email: "",
+        password: ""
+    }
+
+
+    const reducer = (state, action) => {
+        switch (action.type) {
+            case 'SET_SUBMIT_FORM_BTN_DISABLED':
+                return { ...state, isSubmitFormBtnDisabled: action.payload };
+            case 'SET_EMAIL':
+                return { ...state, email: action.payload };
+            case 'SET_PASSWORD':
+                return { ...state, password: action.payload };
+            default:
+                return state;
+        }
+    }
+
+    const [state, dispatch] = useReducer(reducer, initialState);
 
     const navigate = useNavigate();
 
@@ -20,27 +41,33 @@ const LoginUser = () => {
 
         const controller = new AbortController();
         const signal = controller.signal;
-        setSubmitFormBtnDisabled(true);
+
+        dispatch({ type: 'SET_SUBMIT_FORM_BTN_DISABLED', payload: true });
         try {
             const userObject = {
-                email: user.email,
-                password: user.password
+                email: state.email,
+                password: state.password
             }
 
-            let response = await loginUser(userObject, signal);
-
-            if (response) {
-                toast.success('Login successful!', { position: "top-right", });
-                sessionStorage.setItem('User', response);
-                axios.defaults.headers.common["Authorization"] = "Bearer " + response; 
-                navigate('/home'); // Redirect to home page
+            const { token, user: loggedInUser } = await loginUser(userObject, signal);
+            console.log('token', token)
+            console.log('loggedInUser', loggedInUser)
+            if (token) {
+                toast.success('Login successful!', { position: "top-right" });
+                sessionStorage.setItem('token', token);
+                setUserProperties(loggedInUser);
+                axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+                console.log('going to home page')
+                // Redirect to home page 
+                navigate('/home');
             } else {
-                setSubmitFormBtnDisabled(false);
-                toast.error('Login failed!', { position: "top-right", });
-            }
+                console.log('oops something went wrong') 
+                 dispatch({ type: 'SET_SUBMIT_FORM_BTN_DISABLED', payload: false });
+                 toast.error('Login failed!', { position: "top-right" }); }
 
         } catch (error) {
-            setSubmitFormBtnDisabled(false);
+
+            dispatch({ type: 'SET_SUBMIT_FORM_BTN_DISABLED', payload: false });
             if (axios.isCancel(error)) {
                 toast.error('Error logging in!', {
                     position: "top-right",
@@ -55,17 +82,8 @@ const LoginUser = () => {
         }
 
     }
-
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setUser({ ...user, [name]: value });
-    }
-
-
     return (
         <>
-
             <form onSubmit={handleVerifyUser}>
 
                 <div className="flex flex-col justify-center items-center gap-2 p-2 rounded-lg bg-[#d1d1e6]">
@@ -75,7 +93,7 @@ const LoginUser = () => {
                             <span>Email</span>
                         </div>
                         <div className="w-3/4">
-                            <input onChange={(e => handleInputChange(e))} className="rounded-lg p-2 w-full" type="email" name="email" id="email" />
+                            <input onChange={(e => dispatch({ type: 'SET_EMAIL', payload: e.target.value }))} className="rounded-lg p-2 w-full" type="email" name="email" id="email" />
                         </div>
                     </div>
 
@@ -84,14 +102,14 @@ const LoginUser = () => {
                             <span>Password</span>
                         </div>
                         <div className="w-3/4">
-                            <input onChange={(e => handleInputChange(e))} className="rounded-lg p-2 w-full" type="password" name="password" id="password" />
+                            <input onChange={(e => dispatch({ type: 'SET_PASSWORD', payload: e.target.value }))} className="rounded-lg p-2 w-full" type="password" name="password" id="password" />
                         </div>
                     </div>
 
                     <div className="flex-flew-row gap-2">
                         <button
                             type="submit"
-                            disabled={isSubmitFormBtnDisabled || !user.email || !user.password}
+                            disabled={state.isSubmitFormBtnDisabled || !state.email || !state.password}
                             className="hover:cursor-pointer flex flex-row gap-2 items-center mt-2 p-2
                              bg-teal-100 rounded-lg hover:bg-teal-500 transition duration-300 ease-in-out hover:text-white disabled:opacity-50"
                         >Login </button>

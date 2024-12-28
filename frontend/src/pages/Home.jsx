@@ -4,8 +4,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useEffect, useState } from 'react'
 import axios from 'axios';
 import PostContainer from '../components/PostContainer';
+import { useUserContext } from '../context/userContext';
 
 const Home = () => {
+    
+    const { user } = useUserContext()
+    console.log("user", user)
+    
     const [postsData, setData] = useState([])
     useEffect(() => {
 
@@ -63,6 +68,9 @@ const Home = () => {
         return (
 
             <div className="flex flex-col w-full gap-4 justify-center">
+                <div className="greeting flex flex-col gap-2">
+                    <h1>Hello {user?.firstName}</h1>
+                </div>
                 <div className="flex flex-row items-center gap-4">
                     <div>
                         <select onChange={(e) => handleSortOrerBy(e.target.value)} className="p-2 rounded hover:cursor-pointer" name="sortBy" id="sortBy">

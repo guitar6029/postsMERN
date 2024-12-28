@@ -50,12 +50,14 @@ userRoutes.route("/users/:id").get(async (request, response) => {
 // 3. Create a new user
 userRoutes.route("/users").post(async (request, response) => {
     try {
+
+
+
         let db = database.getDataBase();
 
         let userObject = {
             email: request.body.email,
         }
-
         //check if user already exists , use email as unique identifier
         let existingUser = await db.collection("users").findOne({ email: userObject.email });
         if (existingUser) {
@@ -65,7 +67,8 @@ userRoutes.route("/users").post(async (request, response) => {
             const hash = await bcrypt.hashSync(request.body.password, SALT_ROUNDS);
 
             let userObject = {
-                username: request.body.name,
+                firstName: request.body.firstName,
+                lastName: request.body.lastName,
                 email: request.body.email,
                 password: hash,
                 dateCreated: new Date(),
@@ -74,7 +77,10 @@ userRoutes.route("/users").post(async (request, response) => {
             };
             // if user does not exist, create new user   
             let result = await db.collection("users").insertOne(userObject);
-            return response.status(201).json(result);
+            const createdUser = results.ops[0]
+            // Exclude password from the user object 
+            const { password, ...userWithoutPassword } = createdUser; 
+            return response.status(201).json({ success: true, user: userWithoutPassword });
         }
     } catch (error) {
         response.status(500).json({ error: "An error occurred while creating the post", details: error.message });
@@ -94,7 +100,8 @@ userRoutes.route("/users/:id").put(async (request, response) => {
             { _id: new ObjectId(request.params.id) },
             {
                 $set: {
-                    name: request.body.name,
+                    firstName: request.body.firstName,
+                    lastName: request.body.lastName,
                     email: request.body.email,
                     password: request.body.password,
                     dateCreated: request.body.dateCreated,
@@ -114,7 +121,7 @@ userRoutes.route("/users/:id").put(async (request, response) => {
     }
 });
 
-// 5. Delete a post
+// 5. Delete user
 userRoutes.route("/users/:id").delete(async (request, response) => {
     try {
         let db = database.getDataBase();
@@ -145,7 +152,6 @@ userRoutes.route("/users/login").post(async (request, response) => {
             email: request.body.email,
             password: request.body.password
         }
-
         //check if email exists
         let existingUser = await db.collection("users").findOne({ email: userObject.email });
         if (existingUser) {
@@ -153,7 +159,8 @@ userRoutes.route("/users/login").post(async (request, response) => {
             if (await bcrypt.compare(userObject.password, existingUser.password)) {
                 //jwt token
                 let token = jwt.sign(existingUser, process.env.JWT_SECRET, { expiresIn: '1h' })
-                return response.json({ success: true, token });
+                const { password, ...userWithoutPassword} = existingUser;
+                return response.json({ success: true, token, user: userWithoutPassword });
             } else {
                 return response.status(400).json({ error: "Credentials do not match" });
             }

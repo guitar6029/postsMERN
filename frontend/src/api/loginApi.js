@@ -9,9 +9,8 @@ export async function loginUser(userObj, signal) {
         }
 
         let response = await axios.post(`${URI}/users/login`, userObject, { signal })
-        console.log("response:::", response)
         if (response.status === 200) {
-            return response.data.token
+            return { token: response.data.token,  user: response.data.user}
         }
     } catch (error) {
         if (axios.isCancel(error)) {

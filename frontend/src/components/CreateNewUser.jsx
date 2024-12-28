@@ -2,7 +2,7 @@ import { createUser } from '../api/userApi';
 import { StickyNote } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
-import { useState } from 'react';
+import { useReducer } from 'react';
 import axios from 'axios';
 
 import { HandMetal } from 'lucide-react';
@@ -12,44 +12,59 @@ import { Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const CreateNewUser = () => {
-
-
-    //navigate to home after user created
     const navigate = useNavigate();
 
+    const initialState = {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        isSubmitFormBtnDisabled: false,
+        passwordIsHidden: true
+    };
 
-    const [user, setUser] = useState({
-        username: "",
-        email: "",
-        password: ""
-    });
+    const reducer = (state, action) => {
+        switch (action.type) {
+            case 'SET_FIRST_NAME':
+                return { ...state, firstName: action.payload };
+            case 'SET_LAST_NAME':
+                return { ...state, lastName: action.payload };
+            case 'SET_EMAIL':
+                return { ...state, email: action.payload };
+            case 'SET_PASSWORD':
+                return { ...state, password: action.payload };
+            case 'SET_CONFIRM_PASSWORD':
+                return { ...state, confirmPassword: action.payload };
+            case 'SET_IS_SUBMIT_FORM_BTN_DISABLED':
+                return { ...state, isSubmitFormBtnDisabled: action.payload };
+            case 'SET_PASSWORD_IS_HIDDEN':
+                return { ...state, passwordIsHidden: action.payload };
+            default:
+                return state;
+        }
+    };
 
-    const [isSubmitFormBtnDisabled, setSubmitFormBtnDisabled] = useState(false);
-    const [passwordIsHidden, setPasswordIsHidden] = useState(true);
-
+    const [state, dispatch] = useReducer(reducer, initialState);
 
     const handleToggleShowPassword = () => {
-        setPasswordIsHidden(!passwordIsHidden);
-    }
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setUser({ ...user, [name]: value });
+        dispatch({ type: 'SET_PASSWORD_IS_HIDDEN', payload: !state.passwordIsHidden });
     };
 
     const handleCreateNewUser = async (event) => {
         event.preventDefault();
 
-        setSubmitFormBtnDisabled(true);
+        dispatch({ type: 'SET_IS_SUBMIT_FORM_BTN_DISABLED', payload: true });
 
         const controller = new AbortController();
         const signal = controller.signal;
 
         try {
             const userObject = {
-                username: user.username,
-                email: user.email,
-                password: user.password,
+                firstName: state.firstName,
+                lastName: state.lastName,
+                email: state.email,
+                password: state.password,
                 dateCreated: new Date(),
                 likeCount: 0,
                 savedPosts: [],
@@ -59,25 +74,32 @@ const CreateNewUser = () => {
             let response = await createUser(userObject, signal);
 
             if (response && response.status === 201) {
+                const { token, user } = response.data;
 
-                //clear the form
-                setUser({ username: "", email: "", password: "" });
+                // Store token  in session storage
+                sessionStorage.setItem('token', token);
 
-                //redirect to home page
+                // Set Axios authorization header
+                axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+
+                // Clear the form
+                dispatch({ type: 'SET_FIRST_NAME', payload: '' });
+                dispatch({ type: 'SET_LAST_NAME', payload: '' });
+                dispatch({ type: 'SET_EMAIL', payload: '' });
+                dispatch({ type: 'SET_PASSWORD', payload: '' });
+                dispatch({ type: 'SET_CONFIRM_PASSWORD', payload: '' });
+
+                // Redirect to home page
                 navigate('/home');
             }
 
         } catch (error) {
-
-
             if (axios.isCancel(error)) {
                 toast.error('Error creating user!', { position: "top-right" });
-                console.log("Request canceled:", error.message);
-                setSubmitFormBtnDisabled(false);
+                dispatch({ type: 'SET_IS_SUBMIT_FORM_BTN_DISABLED', payload: false });
             } else {
                 toast.error('Error creating user!', { position: "top-right" });
-                console.error("Error creating user:", error);
-                setSubmitFormBtnDisabled(false);
+                dispatch({ type: 'SET_IS_SUBMIT_FORM_BTN_DISABLED', payload: false });
             }
         }
     };
@@ -91,16 +113,29 @@ const CreateNewUser = () => {
                         <StickyNote />
                     </div>
                     <div className="flex flex-col gap-1">
-                        <h3 className="font-semibold">Username</h3>
+                        <h3 className="font-semibold">First Name</h3>
                         <input
-                            onChange={handleInputChange}
+                            onChange={(e) => dispatch({ type: 'SET_FIRST_NAME', payload: e.target.value })}
                             required
                             className="rounded-lg p-2"
-                            value={user.username}
+                            value={state.firstName}
                             type="text"
-                            name="username"
-                            id="username"
-                            placeholder='Enter your username...'
+                            name="firstName"
+                            id="firstName"
+                            maxLength={40}
+                            minLength={3}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <h3 className="font-semibold">Last Name</h3>
+                        <input
+                            onChange={(e) => dispatch({ type: 'SET_LAST_NAME', payload: e.target.value })}
+                            required
+                            className="rounded-lg p-2"
+                            value={state.lastName}
+                            type="text"
+                            name="lastName"
+                            id="lastName"
                             maxLength={40}
                             minLength={3}
                         />
@@ -110,10 +145,10 @@ const CreateNewUser = () => {
                             <h3 className="font-semibold">Email</h3>
                         </div>
                         <input
-                            onChange={handleInputChange}
+                            onChange={(e) => dispatch({ type: 'SET_EMAIL', payload: e.target.value })}
                             required
                             className="rounded-lg p-2"
-                            value={user.email}
+                            value={state.email}
                             type="email"
                             name="email"
                             id="email"
@@ -125,29 +160,47 @@ const CreateNewUser = () => {
                         <h3 className="font-semibold">Password</h3>
                         <div className="flex flex-row gap-2 items-center">
                             <input
-                                onChange={handleInputChange}
+                                onChange={(e) => dispatch({ type: 'SET_PASSWORD', payload: e.target.value })}
                                 required
                                 className="rounded-lg p-2"
-                                value={user.password}
-                                type={passwordIsHidden ? "password" : "text"}
+                                value={state.password}
+                                type={state.passwordIsHidden ? "password" : "text"}
                                 name="password"
                                 id="password"
                                 placeholder='Enter your password...'
                                 maxLength={40}
                             />
-                            {passwordIsHidden &&
-                                <button onClick={handleToggleShowPassword} className="hover:cursor-pointer flex flex-row gap-2 items-center mt-2 p-2 bg-teal-100 rounded-lg hover:bg-teal-500 transition duration-300 ease-in-out hover:text-white "><EyeClosed /></button>
+                            {state.passwordIsHidden &&
+                                <button type="button" onClick={handleToggleShowPassword} className="hover:cursor-pointer flex flex-row gap-2 items-center mt-2 p-2 bg-teal-100 rounded-lg hover:bg-teal-500 transition duration-300 ease-in-out hover:text-white ">
+                                    <EyeClosed />
+                                </button>
                             }
-                            {!passwordIsHidden &&
-                                <button onClick={handleToggleShowPassword} className="hover:cursor-pointer flex flex-row gap-2 items-center mt-2 p-2 bg-teal-100 rounded-lg hover:bg-teal-500 transition duration-300 ease-in-out hover:text-white "><Eye /></button>
+                            {!state.passwordIsHidden &&
+                                <button type="button" onClick={handleToggleShowPassword} className="hover:cursor-pointer flex flex-row gap-2 items-center mt-2 p-2 bg-teal-100 rounded-lg hover:bg-teal-500 transition duration-300 ease-in-out hover:text-white ">
+                                    <Eye />
+                                </button>
                             }
-
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <h3 className="font-semibold">Confirm Password</h3>
+                        <div className="flex flex-row gap-2 items-center">
+                            <input
+                                onChange={(e) => dispatch({ type: 'SET_CONFIRM_PASSWORD', payload: e.target.value })}
+                                required
+                                className="rounded-lg p-2"
+                                value={state.confirmPassword}
+                                type={state.passwordIsHidden ? "password" : "text"}
+                                name="confirmPassword"
+                                id="confirmPassword"
+                                maxLength={40}
+                            />
                         </div>
                     </div>
                     <div >
                         <button
                             type="submit"
-                            disabled={!isSubmitFormBtnDisabled && (!user.email || !user.username || !user.password)}
+                            disabled={state.isSubmitFormBtnDisabled || (!state.email || !state.firstName || !state.lastName || !state.password || (state.password && state.confirmPassword && state.password !== state.confirmPassword))}
                             className="hover:cursor-pointer flex flex-row gap-2 items-center mt-2 p-2 bg-teal-100 rounded-lg hover:bg-teal-500 transition duration-300 ease-in-out hover:text-white disabled:opacity-50"
                         >
                             Join
@@ -157,12 +210,12 @@ const CreateNewUser = () => {
 
                     <hr className="h-2 border-b-2 border-l-blue-600 " />
                     <div className="flex flex-row gap-2">
-                    <span>Already have an account?</span>
-                    <Link to="/">Login</Link>
+                        <span>Already have an account?</span>
+                        <Link to="/">Login</Link>
                     </div>
                 </div>
             </form>
-            
+
             <ToastContainer />
         </>
     );

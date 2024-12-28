@@ -27,21 +27,12 @@ export async function getUser(id, signal) {
 }
 
 
-/**
- * create a user
- * required 
- * {
- *    title : string,
- *    description : string,
- *    author : string,
- *    dateCreated: Date
- * }
- * @param {*} userOject 
- * @param {*} signal 
- */
+
 export async function createUser(userOject, signal) {
     const userObject = {
-        username: userOject.username,
+        
+        firstName: userOject.firstName,
+        lastName: userOject.lastName,
         email: userOject.email,
         password: userOject.password,
         dateCreated: new Date(),
