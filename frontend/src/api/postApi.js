@@ -15,12 +15,7 @@ export async function getPosts(signal) {
 
         }
     } catch (error) {
-        if (axios.isCancel(error)) {
-            return []
-
-        } else {
-            return []
-        }
+        console.error("Error fetching data:", error)
     }
 }
 
@@ -38,11 +33,7 @@ export async function getPost(id, signal) {
 
         }
     } catch (error) {
-        if (axios.isCancel(error)) {
-            console.log("Request canceled:", error.message)
-        } else {
-            console.error("Error fetching data:", error)
-        }
+        console.error("Error fetching data:", error)
 
     }
 }
@@ -77,11 +68,7 @@ export async function createPost(postOject, signal) {
         return response
         
     } catch (error) {
-        if (axios.isCancel(error)) {
-            console.log("Request canceled:", error.message)
-        } else {
-            console.error("Error fetching data:", error)
-        }
+        console.error("Error fetching data:", error)
     }
 }
 
@@ -98,11 +85,7 @@ export async function updatePost(id, data, signal) {
         const response = await axios.post(`http://localhost:3000/posts/${id}`, data, { signal })
         
     } catch (error) {
-        if (axios.isCancel(error)) {
-            console.error("Request canceled:", error.message)
-        } else {
-            console.error("Error fetching data:", error)
-        }
+        console.error("Error fetching data:", error)
        
     }
 }
@@ -120,11 +103,7 @@ export async function deletePost(id, signal) {
         
 
     } catch (error) {
-        if (axios.isCancel(error)) {
-            console.log("Request canceled:", error.message)
-        } else {
-            console.error("Error fetching data:", error)
-        }
+        console.error("Error fetching data:", error)
         
     }
 }

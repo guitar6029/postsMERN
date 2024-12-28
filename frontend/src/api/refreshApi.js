@@ -20,7 +20,7 @@ export async function refreshTokenApi(token, signal) {
         const data = await response.json();
         return data.user;
     } catch (error) {
-        console.error('Error refreshing token:', error);
-        return null;
+        console.error("Error fetching data:", error)
+        return null
     }
 }

@@ -13,10 +13,6 @@ export async function loginUser(userObj, signal) {
             return { token: response.data.token,  user: response.data.user}
         }
     } catch (error) {
-        if (axios.isCancel(error)) {
-            console.log("Request canceled:", error.message)
-        } else {
-            console.error("Error fetching data:", error)
-        }
+        console.error("Error fetching data:", error)
     }
 }

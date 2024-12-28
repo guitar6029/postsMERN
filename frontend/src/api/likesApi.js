@@ -15,12 +15,8 @@ export async function getLikesForPost(id, signal) {
         if (response.status === 200) {
             return response.data
         }
-    } catch (error) {
-        if (axios.isCancel(error)) {
-            console.log("Request canceled:", error.message)
-        } else {
-            console.error("Error fetching data:", error)
-        }
+    } catch (error) { 
+        console.error("Error fetching data:", error)
     }
 
 }
@@ -38,10 +34,6 @@ export async function updateLikeForPost(id, likeValue, signal) {
             return response.data
         }
     } catch (error) {
-        if (axios.isCancel(error)) {
-            console.log("Request canceled:", error.message)
-        } else {
-            console.error("Error fetching data:", error)
-        }
+        console.error("Error fetching data:", error)
     }
 }

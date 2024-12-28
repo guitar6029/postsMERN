@@ -50,18 +50,14 @@ const LoginUser = () => {
             }
 
             const { token, user: loggedInUser } = await loginUser(userObject, signal);
-            console.log('token', token)
-            console.log('loggedInUser', loggedInUser)
             if (token) {
                 toast.success('Login successful!', { position: "top-right" });
                 sessionStorage.setItem('token', token);
                 setUserProperties(loggedInUser);
                 axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-                console.log('going to home page')
                 // Redirect to home page 
                 navigate('/home');
             } else {
-                console.log('oops something went wrong') 
                  dispatch({ type: 'SET_SUBMIT_FORM_BTN_DISABLED', payload: false });
                  toast.error('Login failed!', { position: "top-right" }); }
 
@@ -72,12 +68,11 @@ const LoginUser = () => {
                 toast.error('Error logging in!', {
                     position: "top-right",
                 });
-                console.log("Request canceled:", error.message);
+             
             } else {
                 toast.error('Error logging in!', {
                     position: "top-right",
                 });
-                console.error("Error logging in:", error);
             }
         }
 

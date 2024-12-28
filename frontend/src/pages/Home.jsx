@@ -8,9 +8,7 @@ import { useUserContext } from '../context/userContext';
 
 const Home = () => {
     
-    const { user } = useUserContext()
-    console.log("user", user)
-    
+    const { user } = useUserContext() 
     const [postsData, setData] = useState([])
     useEffect(() => {
 

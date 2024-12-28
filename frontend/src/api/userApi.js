@@ -1,8 +1,6 @@
 import axios from 'axios'
 const URI = "http://localhost:3000"
 
-
-
 /**
  * get specific user
  * @param {*} id 
@@ -11,17 +9,13 @@ const URI = "http://localhost:3000"
 export async function getUser(id, signal) {
     try {
         const response = await axios.get(`http://localhost:3000/users/${id}`, { signal })
-      
+
         if (response.status === 200) {
-           return response.data
+            return response.data
 
         }
     } catch (error) {
-        if (axios.isCancel(error)) {
-            console.log("Request canceled:", error.message)
-        } else {
-            console.error("Error fetching data:", error)
-        }
+        console.error("Error fetching data:", error)
 
     }
 }
@@ -30,7 +24,7 @@ export async function getUser(id, signal) {
 
 export async function createUser(userOject, signal) {
     const userObject = {
-        
+
         firstName: userOject.firstName,
         lastName: userOject.lastName,
         email: userOject.email,
@@ -42,13 +36,9 @@ export async function createUser(userOject, signal) {
     try {
         const response = await axios.post(`${URI}/users`, userObject, { signal })
         return response
-        
+
     } catch (error) {
-        if (axios.isCancel(error)) {
-            console.log("Request canceled:", error.message)
-        } else {
-            console.error("Error fetching data:", error)
-        }
+        console.error("Error fetching data:", error)
     }
 }
 
@@ -63,15 +53,8 @@ export async function createUser(userOject, signal) {
 export async function updateUser(id, data, signal) {
     try {
         const response = await axios.post(`http://localhost:3000/users/${id}`, data, { signal })
-        
+
     } catch (error) {
-        if (axios.isCancel(error)) {
-            console.error("Request canceled:", error.message)
-        } else {
-            console.error("Error fetching data:", error)
-        }
-        toast.error('Error fetching data!', {
-            position: "top-right",
-        })
+        console.error("Error fetching data:", error)
     }
 }

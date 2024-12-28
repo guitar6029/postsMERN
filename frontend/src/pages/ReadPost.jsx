@@ -99,7 +99,6 @@ const ReadPost = () => {
     }, [id]);
 
     const handleCloseModal = () => {
-        console.log("Modal closed");
         dispatch({ type: 'SET_CONFIRM_MODAL_OPEN', payload: false });
     }
 

@@ -37,14 +37,12 @@ const CreatePost = () => {
         } catch (error) {
             if (axios.isCancel(error)) {
                 toast.error('Error creating post!', { position: "top-right", })
-                console.log("Request canceled:", error.message)
+          
             } else {
                 toast.error('Error creating post!', { position: "top-right", })
-                console.error("Error creating post:", error)
             }
         }
 
-        console.log(title, author, description)
     }
 
     return (<>
