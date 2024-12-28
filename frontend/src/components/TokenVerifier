@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useUserContext } from '../context/userContext'; // Import useUserContext
-import { refreshTokenApi } from '../api/refreshApi'; // Import the refreshTokenApi function
+import { useUserContext } from '../context/userContext'; 
+import { refreshTokenApi } from '../api/refreshApi'; 
 
 const TokenVerifier = () => {
   const { setUserProperties } = useUserContext(); // Access setUserProperties from context
