@@ -2,7 +2,16 @@ const express = require('express');
 const database = require('../connect');
 const ObjectId = require('mongodb').ObjectId;
 const authMiddleware = require('../middleware/auth/authMiddleware');
+const attachUserIdMiddleware = require('../middleware/auth/attachUserIdMiddleware');
+const dynamicUserPropertiesMiddleware = require('../middleware/dynamicUserPropertiesMiddlware');
 require('dotenv').config({ path: './config.env' });
+
+
+
+// Use middleware to get user properties dynamically 
+const userPropertiesMiddleware = dynamicUserPropertiesMiddleware(['firstName', 'lastName']);
+
+
 
 let postRoutes = express.Router();
 
@@ -44,13 +53,15 @@ postRoutes.route("/posts/:id").get(authMiddleware, async (request, response) => 
 });
 
 // 3. Create a new post
-postRoutes.route("/posts").post(authMiddleware, async (request, response) => {
+postRoutes.route("/posts").post(authMiddleware, userPropertiesMiddleware,  attachUserIdMiddleware, async (request, response) => {
     try {
         let db = database.getDataBase();
         let postObject = {
+            author: `${request.firstName} ${request.lastName}`, 
+            
             title: request.body.title,
             description: request.body.description,
-            author: request.body.user.userId, // Use the user ID from the token
+            creatorsID: request.userId,
             dateCreated: new Date(),
             likeCount: 0
         };
@@ -105,5 +116,54 @@ postRoutes.route("/posts/:id").delete(authMiddleware, async (request, response) 
         response.status(500).json({ error: "An error occurred while deleting the post", details: error.message });
     }
 });
+
+
+// get all post by user id (_id)
+postRoutes.route("/posts/user/all").get(authMiddleware, attachUserIdMiddleware, async (request, response) => {
+    try {
+        const db = database.getDataBase();
+        const userId = request.userId; // Use the attached user ID from the middleware
+
+        console.log('userID', userId);
+
+        if (!userId) {
+            return response.status(401).json({ error: "User ID not found in token" });
+        }
+       
+        //.find({ creatorsID: new ObjectId(userId) })
+        const data = await db.collection("posts").find({ creatorsID: userId.toString() }).toArray();
+        console.log("data ::", data)
+        if (data.length > 0) {
+            response.json(data);
+        } else {
+            response.status(404).json({ error: "No posts found." });
+        }
+    } catch (error) {
+        response.status(500).json({ error: "An error occurred while retrieving posts", details: error.message });
+    }
+});
+
+
+//delete all post by user id (_id)
+postRoutes.route("/posts/user/delete-all").delete(authMiddleware, attachUserIdMiddleware, async (request, response) => {
+    try {
+        const db = database.getDataBase();
+        const userId = request.userId; // Use the attached user ID from the middleware
+        if (!userId) {
+            return response.error(401).json({ error: "User ID not found in token" });
+        }
+
+        const result = await db.collection("posts").deleteMany({ creatorsID: userId.toString()});
+
+        if (result.deletedCount === 0) {
+            return response.status(404).json({ error: "Post not found" });
+        }
+
+        response.status(200).json({ success: true, message: "Post deleted" });
+    } catch (error) {
+        response.status(500).json({ error: "An error occurred while deleting the post", details: error.message });
+    }
+})
+
 
 module.exports = postRoutes;

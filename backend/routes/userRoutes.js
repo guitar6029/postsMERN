@@ -10,7 +10,6 @@ let userRoutes = express.Router();
 const SALT_ROUNDS = 10
 
 // 1. Retrieve all users
-// http://localhost:3000/users
 userRoutes.route("/users").get(async (request, response) => {
     try {
         let db = database.getDataBase();
@@ -50,9 +49,6 @@ userRoutes.route("/users/:id").get(async (request, response) => {
 // 3. Create a new user
 userRoutes.route("/users").post(async (request, response) => {
     try {
-
-
-
         let db = database.getDataBase();
 
         let userObject = {
@@ -75,12 +71,16 @@ userRoutes.route("/users").post(async (request, response) => {
                 posts: []
                 , savedPosts: []
             };
-            // if user does not exist, create new user   
+            // if user does not exist, create new user 
+
             let result = await db.collection("users").insertOne(userObject);
-            const createdUser = results.ops[0]
-            // Exclude password from the user object 
-            const { password, ...userWithoutPassword } = createdUser;
-            return response.status(201).json({ success: true, user: userWithoutPassword });
+            const createdUser = result.ops[0]
+            
+            const token = jwt.sign({ userId: createdUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            const { password, ...userWithoutPassword } = createdUser; 
+            return res.json({ success: true, token, user: userWithoutPassword });
+
+
         }
     } catch (error) {
         response.status(500).json({ error: "An error occurred while creating the post", details: error.message });
@@ -155,11 +155,13 @@ userRoutes.route("/users/login").post(async (request, response) => {
         //check if email exists
         let existingUser = await db.collection("users").findOne({ email: userObject.email });
         if (existingUser) {
+
+            const isPasswordCorrect = await bcrypt.compare(userObject.password, existingUser.password);
             //now check if password is correct
-            if (await bcrypt.compare(userObject.password, existingUser.password)) {
+            if (isPasswordCorrect) {
                 //jwt token
-                let token = jwt.sign(existingUser, process.env.JWT_SECRET, { expiresIn: '1h' })
-                const { password, ...userWithoutPassword } = existingUser;
+                const token = jwt.sign({ userId: existingUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' }); 
+                const { password, ...userWithoutPassword } = existingUser; 
                 return response.json({ success: true, token, user: userWithoutPassword });
             } else {
                 return response.status(400).json({ error: "Credentials do not match" });
