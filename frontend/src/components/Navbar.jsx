@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { links } from "../links/navlinks";
-import { LogOut, CircleUserRound, CreditCard, UserRound } from 'lucide-react';
+import { LogOut, CircleUserRound, CreditCard, UserRound, Settings } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../context/userContext";
 
@@ -36,6 +36,10 @@ const NavBar = () => {
                 setShowDropdown(false);
                 navigate("/subscription");
                 break;
+            case 'settings':
+                setShowDropdown(false);
+                navigate("/settings");
+                break;
             case 'logout':
                 handleLogOut();
                 break;
@@ -44,14 +48,7 @@ const NavBar = () => {
         }
     }
 
-    //detect click outside of dropdwn and close it
-    // const handleClickOutside = (event) => {
-    //     if (showDropdown && !event.target.closest('.dropdown')) {
-    //         setShowDropdown(false);
-    //     }
-    // };
 
-    // document.addEventListener('click', handleClickOutside);
 
     return (
         <>
@@ -72,7 +69,7 @@ const NavBar = () => {
                         <CircleUserRound className="text-white" size={20} />
                     </button>
                     {showDropdown && (
-                        <div className="flex flex-col absolute right-0 mt-1 p-2 w-[250px] h-56 bg-white rounded-lg shadow-xl dropdown z-50">
+                        <div className="flex flex-col absolute right-0 mt-1 p-2 w-[250px] h-60 bg-white rounded-lg shadow-xl dropdown z-50">
                             <div className="flex flex-col h-full justify-between">
 
                                 <div className="flex flex-col gap-2">
@@ -82,22 +79,26 @@ const NavBar = () => {
                                         <div className="w-1/4 flex flex-row justify-center">
                                             <CircleUserRound className="text-black" size={40} />
                                         </div>
-                                        <div className="flex w-3/4 flex-col gap-1">
+                                        <div className="flex w-3/4 flex-col ">
                                             <span>{user?.firstName} {user?.lastName}</span>
-                                            <span>{user?.email}</span>
+                                            <span className="font-light">{user?.email}</span>
                                         </div>
                                     </div>
 
                                     {/* middle section */}
-                                    <div className="flex flex-col gap-1 p-2">
-                                        <hr style={{ height: "2px", backgroundColor: '#DF9453', border: 'none' }} />
-                                        <div onClick={() => handleRedirect('profile')} className="flex flew-row items-center gap-1 hover:cursor-pointer">
-                                            <UserRound className="text-black" size={20} />
-                                            <span >View Profile</span>
+                                    <div className="flex flex-col gap-2 p-2">
+                                        <hr />
+                                        <div onClick={() => handleRedirect('profile')} className="group hover:text-sky-600   flex flew-row items-center gap-2 hover:cursor-pointer">
+                                            <UserRound className="group-hover:text-sky-600 text-black" size={20} />
+                                            <span>View Profile</span>
                                         </div>
-                                        <div onClick={() => handleRedirect('subscription')} className="flex flex-row items-center gap-1 hover:cursor-pointer">
-                                            <CreditCard className="text-black" size={20} />
+                                        <div onClick={() => handleRedirect('subscription')} className="group hover:text-sky-600  flex flex-row items-center gap-2 hover:cursor-pointer">
+                                            <CreditCard className="group-hover:text-sky-600text-black" size={20} />
                                             <span >Subscription</span>
+                                        </div>
+                                        <div onClick={() => handleRedirect('settings')} className="group hover:text-sky-600 flex flex-row items-center gap-2 hover:cursor-pointer">
+                                            <Settings className="group-hover:text-sky-600 text-black" size={20} />
+                                            <span>Settings</span>
                                         </div>
                                         <hr />
                                     </div>
@@ -106,9 +107,9 @@ const NavBar = () => {
 
                                 {/* bottom section */}
                                 <div className="flex flex-col p-2">
-                                    <div onClick={() => handleRedirect('logout')} className="flex flex-row items-center gap-1 hover:cursor-pointer">
-                                        <LogOut className="text-black" size={20} />
-                                        <span className=" text-gray-800 hover:bg-gray-200 cursor-pointer">Sign Out</span>
+                                    <div onClick={() => handleRedirect('logout')} className="group hover:text-sky-600  flex flex-row items-center gap-2 hover:cursor-pointer">
+                                        <LogOut className="group-hover:text-sky-600text-black" size={20} />
+                                        <span>Sign Out</span>
                                     </div>
 
                                 </div>

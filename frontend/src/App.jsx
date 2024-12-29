@@ -7,6 +7,8 @@ import Account from './pages/Account';
 import ReadPost from './pages/ReadPost';
 import CreatePost from './pages/CreatePost';
 import CreateNewUser from './components/CreateNewUser';
+import Settings from './pages/Settings';
+import Subscription from './pages/Subscription';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute'; // Import the ProtectedRoute component
 import axios from 'axios';
@@ -34,6 +36,8 @@ function App() {
           <Route path="account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
           <Route path="createpost" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
           <Route path="readpost/:id" element={<ProtectedRoute><ReadPost /></ProtectedRoute>} />
+          ,<Route path="/subscription" element={<ProtectedRoute><Subscription /></ProtectedRoute> } />
+          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           {/* Add a wildcard route to catch all other paths */}
           <Route path="*" element={<Landing />} />
         </Route>
