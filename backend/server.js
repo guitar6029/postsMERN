@@ -4,8 +4,8 @@ const express = require("express");
 const cors = require("cors");
 const posts = require("./routes/postRoutes");
 const likesRoutes = require('./routes/likesRoutes');
-const userRoutes = require('./routes/userRoutes')
-const refreshRoutes = require('./routes/refreshApi')
+const userRoutes = require('./routes/userRoutes');
+
 
 
 
@@ -20,7 +20,6 @@ app.use(express.json());
 app.use(posts);
 app.use(likesRoutes);
 app.use(userRoutes);
-app.use(refreshRoutes)
 
 // Start server
 const startServer = async () => {
