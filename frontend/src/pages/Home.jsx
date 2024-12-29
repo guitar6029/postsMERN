@@ -37,6 +37,21 @@ const Home = () => {
 
     }, [])
 
+    const getGreeting = () => {
+        let greeting = '';
+        const hour = new Date().getHours();
+        if (hour < 12) {
+            greeting = 'Good Morning, ';
+        } else if (hour < 18) {
+            greeting = 'Good Afternoon, ';
+        } else {
+            greeting = 'Good Evening, ';
+        }
+    
+        return greeting;
+    }
+    
+
     const handleSortOrerBy = (sortBy) => {
         //sort data based on sortBy value
         switch (sortBy) {
@@ -67,7 +82,7 @@ const Home = () => {
 
             <div className="flex flex-col w-full gap-4 justify-center">
                 <div className="greeting flex flex-col gap-2">
-                    <h1>Hello {user?.firstName}</h1>
+                    <h1 className="text-3xl text-white font-semibold">{ getGreeting() } {user?.firstName}</h1>
                 </div>
                 <div className="flex flex-row items-center gap-4">
                     <div>

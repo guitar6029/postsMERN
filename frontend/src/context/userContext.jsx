@@ -16,8 +16,6 @@ export const UserProvider = ({ children }) => {
     }, []);
 
     const setUserProperties = (userData) => {
-        console.log("called setUserProperties");
-        console.log("userData", userData);
         if (userData) {
             setUser(userData);
             sessionStorage.setItem("user", JSON.stringify(userData));

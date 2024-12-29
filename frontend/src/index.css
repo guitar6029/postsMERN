@@ -5,7 +5,7 @@
 
 body{
     background: #F5DDC8;
-    padding: 2rem;
+    min-width: 450px;
 }
 
 html {
@@ -43,4 +43,5 @@ html {
   ::-webkit-scrollbar-thumb {
     transition: background 0.3s ease;
   }
+  
   

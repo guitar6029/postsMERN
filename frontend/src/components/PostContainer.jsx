@@ -9,7 +9,7 @@ const PostContainer = ({ post, index }) => {
     return (
         <Link
             to={`/readpost/${post._id}`}
-            className="block w-full transition duration-300 ease-in hover:cursor-pointer hover:scale-105"
+            className="block w-full transition duration-300 ease-in hover:cursor-pointer"
             style={bgColorStyle}
         >
             <div
