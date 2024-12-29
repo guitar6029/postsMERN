@@ -1,7 +1,9 @@
-import { useEffect, useState,  useReducer } from "react";
+import { useEffect, useState, useReducer } from "react";
 import { getAllPostsByUser } from "../api/postApi";
 import axios from "axios";
-import {toast, ToastContainer} from 'react-toastify';
+import { List, Grid3x3 } from 'lucide-react';
+import { toast, ToastContainer } from 'react-toastify';
+import PostContainer from "../components/PostContainer";
 
 const Account = () => {
 
@@ -9,6 +11,7 @@ const Account = () => {
     const initialState = {
         postsLoading: true,
         posts: [],
+        postView: 'list'
     }
 
 
@@ -18,12 +21,14 @@ const Account = () => {
                 return { ...state, posts: action.payload }
             case 'SET_POSTS_LOADING':
                 return { ...state, postsLoading: action.payload }
+            case 'SET_POST_VIEW':
+                return { ...state, postView: action.payload }
             default:
                 return state
         }
     }
 
-    const [ state, dispatch] = useReducer(reducer, initialState)
+    const [state, dispatch] = useReducer(reducer, initialState)
 
 
     const [userPosts, setUserPosts] = useState([]);
@@ -32,7 +37,7 @@ const Account = () => {
         const controller = new AbortController()
         const signal = controller.signal
 
-        
+
         async function getAllPosts() {
             try {
                 const response = await getAllPostsByUser(signal)
@@ -43,7 +48,7 @@ const Account = () => {
             } catch (error) {
                 dispactch({ type: 'SET_POSTS_LOADING', payload: false })
                 toast.error('Error fetching data!', { position: "top-right" })
-            
+
             }
         }
 
@@ -52,27 +57,47 @@ const Account = () => {
         return () => {
             controller.abort()
         }
-        
+
     }, [])
 
 
 
     return (
-    <>
-        <div className="flex flex-col gap-2">
-            <div className="flex flex-col p-2">
-                <h2>Your Posts</h2>
-                {state.loading && <p>Loading...</p>}
-                {state.posts.map((post) => (
-                    <div key={post._id}>
-                        <h3>{post.title}</h3>
-                        <p>{post.description}</p>
-                        <p>{post.dateCreated}</p>
+        <>
+            <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-4 p-2">
+                    <div className="flex flex-row justify-between">
+                        <h2 className="text-2xl font-extrabold">Your Posts</h2>
+
+                        <div className="flex flex-row items-center gap-2 p-2 bg-slate-50 rounded-lg">
+                            <Grid3x3 className="hover-sky-600-text" width={20} onClick={() => dispatch({ type: 'SET_POST_VIEW', payload: 'grid' })} />
+                            |
+                            <List className="hover-sky-600-text" width={20} onClick={() => dispatch({ type: 'SET_POST_VIEW', payload: 'list' })} />
+                        </div>
+
                     </div>
-                ))}
+                    {state.loading && <p>Loading...</p>}
+                    {state.postView === 'list' && (
+                        <div className="flex flex-col gap-1 w-full">
+                        {state.posts.map((post) => (
+                            <PostContainer key={post._id} post={post} index={state.posts.indexOf(post)} viewType={state.postView} />
+                        ))}
+
+                    </div>
+                    )}
+                    {state.postView === 'grid' && (
+                        <div className="grid grid-cols-3 gap-2">
+                        {state.posts.map((post) => (
+                            <PostContainer key={post._id} post={post} index={state.posts.indexOf(post)} viewType={state.postView} />
+                        ))}
+
+                    </div>
+                    )}
+                    
+                    
+                </div>
             </div>
-        </div>
-    </>);
+        </>);
 }
 
 export default Account

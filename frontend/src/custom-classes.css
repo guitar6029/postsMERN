@@ -1,0 +1,4 @@
+/* custom-classes.css */
+.hover-sky-600-text {
+    @apply hover:cursor-pointer hover:text-sky-600;
+}
