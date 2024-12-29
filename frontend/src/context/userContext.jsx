@@ -1,4 +1,4 @@
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 
 // Create the UserContext
 const UserContext = createContext();
@@ -7,9 +7,22 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
+    useEffect(() => {
+        // Load user data from session storage on initial mount
+        const sessionUser = sessionStorage.getItem("user");
+        if (sessionUser) {
+            setUser(JSON.parse(sessionUser));
+        }
+    }, []);
+
     const setUserProperties = (userData) => {
-        setUser(userData)
-    }
+        console.log("called setUserProperties");
+        console.log("userData", userData);
+        if (userData) {
+            setUser(userData);
+            sessionStorage.setItem("user", JSON.stringify(userData));
+        }
+    };
 
     return (
         <UserContext.Provider value={{ user, setUserProperties }}>
@@ -19,4 +32,4 @@ export const UserProvider = ({ children }) => {
 };
 
 // Custom hook to use the UserContext
-export const useUserContext = () => useContext(UserContext)
+export const useUserContext = () => useContext(UserContext);

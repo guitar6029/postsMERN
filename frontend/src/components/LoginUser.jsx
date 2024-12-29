@@ -51,7 +51,6 @@ const LoginUser = () => {
 
             const { token, user: loggedInUser } = await loginUser(userObject, signal);
             if (token) {
-                toast.success('Login successful!', { position: "top-right" });
                 sessionStorage.setItem('token', token);
                 setUserProperties(loggedInUser);
                 axios.defaults.headers.common["Authorization"] = "Bearer " + token;

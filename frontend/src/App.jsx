@@ -11,7 +11,6 @@ import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute'; // Import the ProtectedRoute component
 import axios from 'axios';
 import { UserProvider } from './context/userContext';
-import TokenVerifier from './components/TokenVerifier'
 
 function App() {
   // Watch axios headers authorization
@@ -24,7 +23,7 @@ function App() {
 
   return (
     <UserProvider>
-      {/* <TokenVerifier /> Verify token after UserProvider is initialized */}
+     
       <Routes>
         {/* The root path "/" will render Landing component */}
         <Route path="/" element={<Landing />} />

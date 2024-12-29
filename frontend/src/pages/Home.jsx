@@ -2,7 +2,6 @@
 import { getPosts, getPost, createPost, updatePost, deletePost } from '../api/postApi';
 import { ToastContainer, toast } from 'react-toastify';
 import { useEffect, useState } from 'react'
-import axios from 'axios';
 import PostContainer from '../components/PostContainer';
 import { useUserContext } from '../context/userContext';
 
@@ -10,6 +9,7 @@ const Home = () => {
     
     const { user } = useUserContext() 
     const [postsData, setData] = useState([])
+    
     useEffect(() => {
 
         const controller = new AbortController()
@@ -101,6 +101,7 @@ const Home = () => {
             <>
                 <div className="flex flex-col w-full text-center gap-4 justify-center items-center">
                     <div>
+                        <h1>Hello {user?.firstName}</h1>
                         <h1 className="text-3xl mb-2">No Posts</h1>
                         <button className="rounded-lg p-2 w-fit bg-[#516DBE] text-white">Create Post</button>
                     </div>
