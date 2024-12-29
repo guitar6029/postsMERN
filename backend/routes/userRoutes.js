@@ -79,7 +79,7 @@ userRoutes.route("/users").post(async (request, response) => {
             let result = await db.collection("users").insertOne(userObject);
             const createdUser = results.ops[0]
             // Exclude password from the user object 
-            const { password, ...userWithoutPassword } = createdUser; 
+            const { password, ...userWithoutPassword } = createdUser;
             return response.status(201).json({ success: true, user: userWithoutPassword });
         }
     } catch (error) {
@@ -159,7 +159,7 @@ userRoutes.route("/users/login").post(async (request, response) => {
             if (await bcrypt.compare(userObject.password, existingUser.password)) {
                 //jwt token
                 let token = jwt.sign(existingUser, process.env.JWT_SECRET, { expiresIn: '1h' })
-                const { password, ...userWithoutPassword} = existingUser;
+                const { password, ...userWithoutPassword } = existingUser;
                 return response.json({ success: true, token, user: userWithoutPassword });
             } else {
                 return response.status(400).json({ error: "Credentials do not match" });
