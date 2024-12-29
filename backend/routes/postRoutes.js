@@ -1,16 +1,13 @@
 const express = require('express');
 const database = require('../connect');
 const ObjectId = require('mongodb').ObjectId;
-const jwt = require('jsonwebtoken');
+const authMiddleware = require('../middleware/auth/authMiddleware');
 require('dotenv').config({ path: './config.env' });
 
 let postRoutes = express.Router();
 
 // 1. Retrieve all posts
-// http://localhost:3000/posts
-
-
-postRoutes.route("/posts").get( verifyToken, async (request, response) => {
+postRoutes.route("/posts").get(authMiddleware, async (request, response) => {
     try {
         let db = database.getDataBase();
         let data = await db.collection("posts").find({}).toArray();
@@ -26,7 +23,7 @@ postRoutes.route("/posts").get( verifyToken, async (request, response) => {
 });
 
 // 2. Retrieve a single post by ID
-postRoutes.route("/posts/:id").get(verifyToken, async (request, response) => {
+postRoutes.route("/posts/:id").get(authMiddleware, async (request, response) => {
     try {
         let db = database.getDataBase();
         
@@ -47,13 +44,13 @@ postRoutes.route("/posts/:id").get(verifyToken, async (request, response) => {
 });
 
 // 3. Create a new post
-postRoutes.route("/posts").post(verifyToken,async (request, response) => {
+postRoutes.route("/posts").post(authMiddleware, async (request, response) => {
     try {
         let db = database.getDataBase();
         let postObject = {
             title: request.body.title,
             description: request.body.description,
-            author: request.body.author,
+            author: request.body.user.userId, // Use the user ID from the token
             dateCreated: new Date(),
             likeCount: 0
         };
@@ -65,7 +62,7 @@ postRoutes.route("/posts").post(verifyToken,async (request, response) => {
 });
 
 // 4. Update a post
-postRoutes.route("/posts/:id").put(verifyToken, async (request, response) => {
+postRoutes.route("/posts/:id").put(authMiddleware, async (request, response) => {
     try {
         let db = database.getDataBase();
 
@@ -89,7 +86,7 @@ postRoutes.route("/posts/:id").put(verifyToken, async (request, response) => {
 });
 
 // 5. Delete a post
-postRoutes.route("/posts/:id").delete(verifyToken ,async (request, response) => {
+postRoutes.route("/posts/:id").delete(authMiddleware, async (request, response) => {
     try {
         let db = database.getDataBase();
         
@@ -109,26 +106,4 @@ postRoutes.route("/posts/:id").delete(verifyToken ,async (request, response) => 
     }
 });
 
-
-
-function verifyToken(request, response, next) {
-    const authHeaders  = request.headers["authorization"];
-    const token = authHeaders && authHeaders.split(" ")[1];
-    if (token) {
-        //verify token
-        jwt.verify(token, process.env.JWT_SECRET, (error, user) => {
-            if (error) {
-                return response.status(403).json({ error: "Invalid token" });
-            }
-            request.body.user = user;
-            next();
-        });
-    } else {
-        return response.status(401).json({ error: "No token provided" });
-    }
-
-}
-
-
-
-module.exports = postRoutes
+module.exports = postRoutes;

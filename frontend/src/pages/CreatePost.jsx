@@ -1,10 +1,8 @@
-import { BookPlus } from 'lucide-react';
 import { createPost } from '../api/postApi';
 import { StickyNote } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
-import { useEffect, useState } from 'react';
-import { motion } from "motion/react"
-import axios from 'axios';
+import { useState } from 'react';
+import { useUserContext } from '../context/userContext';
 
 const CreatePost = () => {
 
@@ -35,12 +33,8 @@ const CreatePost = () => {
                 toast.success('Post created successfully!', { position: "top-right", })
             }
         } catch (error) {
-            if (axios.isCancel(error)) {
-                toast.error('Error creating post!', { position: "top-right", })
-          
-            } else {
-                toast.error('Error creating post!', { position: "top-right", })
-            }
+            toast.error('Error creating post!', { position: "top-right", })
+            
         }
 
     }
