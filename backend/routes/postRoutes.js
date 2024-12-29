@@ -35,7 +35,7 @@ postRoutes.route("/posts").get(authMiddleware, async (request, response) => {
 postRoutes.route("/posts/:id").get(authMiddleware, async (request, response) => {
     try {
         let db = database.getDataBase();
-        
+
         if (!ObjectId.isValid(request.params.id)) {
             return response.status(400).json({ error: "Invalid ID format" });
         }
@@ -53,12 +53,12 @@ postRoutes.route("/posts/:id").get(authMiddleware, async (request, response) => 
 });
 
 // 3. Create a new post
-postRoutes.route("/posts").post(authMiddleware, userPropertiesMiddleware,  attachUserIdMiddleware, async (request, response) => {
+postRoutes.route("/posts").post(authMiddleware, userPropertiesMiddleware, attachUserIdMiddleware, async (request, response) => {
     try {
         let db = database.getDataBase();
         let postObject = {
-            author: `${request.firstName} ${request.lastName}`, 
-            
+            author: `${request.firstName} ${request.lastName}`,
+
             title: request.body.title,
             description: request.body.description,
             creatorsID: request.userId,
@@ -100,7 +100,7 @@ postRoutes.route("/posts/:id").put(authMiddleware, async (request, response) => 
 postRoutes.route("/posts/:id").delete(authMiddleware, async (request, response) => {
     try {
         let db = database.getDataBase();
-        
+
         if (!ObjectId.isValid(request.params.id)) {
             return response.status(400).json({ error: "Invalid ID format" });
         }
@@ -122,14 +122,13 @@ postRoutes.route("/posts/:id").delete(authMiddleware, async (request, response) 
 postRoutes.route("/posts/user/all").get(authMiddleware, attachUserIdMiddleware, async (request, response) => {
     try {
         const db = database.getDataBase();
-        const userId = request.userId; // Use the attached user ID from the middleware
-
-        console.log('userID', userId);
+        // Use the attached user ID from the middleware
+        const userId = request.userId; 
 
         if (!userId) {
             return response.status(401).json({ error: "User ID not found in token" });
         }
-       
+
         //.find({ creatorsID: new ObjectId(userId) })
         const data = await db.collection("posts").find({ creatorsID: userId.toString() }).toArray();
         console.log("data ::", data)
@@ -153,7 +152,7 @@ postRoutes.route("/posts/user/delete-all").delete(authMiddleware, attachUserIdMi
             return response.error(401).json({ error: "User ID not found in token" });
         }
 
-        const result = await db.collection("posts").deleteMany({ creatorsID: userId.toString()});
+        const result = await db.collection("posts").deleteMany({ creatorsID: userId.toString() });
 
         if (result.deletedCount === 0) {
             return response.status(404).json({ error: "Post not found" });
@@ -164,6 +163,38 @@ postRoutes.route("/posts/user/delete-all").delete(authMiddleware, attachUserIdMi
         response.status(500).json({ error: "An error occurred while deleting the post", details: error.message });
     }
 })
+
+
+// returns if user is allowed to delete a particular post depending if post
+// was originally created by the user or not
+postRoutes.route("/posts/delete-one/:id").get(authMiddleware, attachUserIdMiddleware, async (request, response) => {
+    try {
+        const postIdForDelete = request.params.id;
+        const db = database.getDataBase();
+        // Use the attached user ID from the middleware
+        const userId = request.userId;
+
+
+        if (!userId) {
+            return response.status(401).json({ error: "User ID not found in token" });
+        }
+
+        const post = await db.collection("posts").findOne(
+            {
+                creatorsID: userId.toString(),
+                _id: new ObjectId(postIdForDelete)
+            }
+        );
+
+        if (post) {
+            response.status(200).json({ success: true, message: "Post can be deleted" });
+        } else {
+            response.status(404).json({ error: "Post not found" });
+        }
+    } catch (error) {
+        response.status(500).json({ error: "An error occurred while deleting the post", details: error.message });
+    }
+});
 
 
 module.exports = postRoutes;

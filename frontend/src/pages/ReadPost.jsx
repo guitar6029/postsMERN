@@ -8,13 +8,15 @@ import { useEffect, useReducer } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Modal from "../components/modal/modal";
+import { userAllowedToDeletePost } from "../api/postApi";
 
 const initialState = {
     singlePostData: {},
     likeCount: 0,
     alreadyLiked: false,
     bgColor: '',
-    confirmModalIsOpen: false
+    confirmModalIsOpen: false,
+    allowedToDeletePost: false
 }
 
 const reducer = (state, action) => {
@@ -29,6 +31,8 @@ const reducer = (state, action) => {
             return { ...state, confirmModalIsOpen: action.payload };
         case 'SET_BG_COLOR':
             return { ...state, bgColor: action.payload };
+        case 'SET_ALLOWED_TO_DELETE_POST':
+            return { ...state, allowedToDeletePost: action.payload };
         default:
             return state;
     }
@@ -45,6 +49,32 @@ const ReadPost = () => {
         const bgColor = getColor(Math.floor(Math.random() * 10));
         dispatch({ type: 'SET_BG_COLOR', payload: bgColor });
     }, []);
+
+    //call on once on load to check if user can delete post
+    useEffect(() => {
+
+        const controller = new AbortController();
+        const signal = controller.signal;
+
+        const checkIfCanDeletePsot = async () => {
+            try {
+                const response = await userAllowedToDeletePost(id, signal);
+                if (response && response.status === 200) {
+                    dispatch({ type: "SET_ALLOWED_TO_DELETE_POST", payload: true })
+                }
+            } catch (error) {
+                dispatch({ type: "SET_ALLOWED_TO_DELETE_POST", payload: false })
+                toast.error('Error deleting post!', { position: "top-right" });
+            }
+        }
+
+        checkIfCanDeletePsot(id);
+
+        //clean up
+        return () => {
+            controller.abort();
+        }
+    }, [])
 
     const confirmModalForPostDelete = () => {
         dispatch({ type: 'SET_CONFIRM_MODAL_OPEN', payload: true });
@@ -151,11 +181,14 @@ const ReadPost = () => {
                         <span className="font-bold">Likes </span>
                         <span className="flex flex-row items-center justify-center p-2 w-10 bg-white rounded-full text-black font-bold ">{state.singlePostData.likeCount}</span>
                     </div>
-                    <div className="flex flex-row justify-end">
+                    {state.allowedToDeletePost && (
+                        <div className="flex flex-row justify-end">
                         <div className="rounded-full w-fit p-2 bg-[#ddbebc] hover:cursor-pointer">
                             <Trash2 onClick={confirmModalForPostDelete} />
                         </div>
                     </div>
+                    )}
+                    
                 </div>
             </div>
             <ToastContainer />

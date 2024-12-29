@@ -88,3 +88,16 @@ export async function getAllPostsByUser(signal) {
         console.error("Error fetching data:", error)
     }
 }
+
+
+// checks if user can delete the post by checking the user id and the post creator id
+export async function userAllowedToDeletePost(id, signal) {
+    try{
+        const response = await axios.get(`${URI}/posts/delete-one/${id}`, { signal })
+        if (response.status === 200) {
+            return response
+        }
+    } catch (error) {
+        console.error("Error fetching data:", error)
+    }
+}
