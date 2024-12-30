@@ -1,9 +1,10 @@
 import { getGreeting } from '../utils/StringUtils';
-import { getPosts } from '../api/postApi';
+import { getRecentPosts } from '../api/postApi';
 import { ToastContainer, toast } from 'react-toastify';
 import { useEffect, useReducer } from 'react'
 import { useUserContext } from '../context/userContext';
 import { getColor } from '../utils/Colors';
+import { Link, useNavigate } from "react-router-dom";
 
 
 const initialState = {
@@ -12,7 +13,7 @@ const initialState = {
 }
 
 const reducer = (state, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case "SET_RECENT_POSTS":
             return { ...state, recentPosts: action.payload }
         case "SET_LOADING_RECENT_POSTS":
@@ -29,42 +30,51 @@ const Home = () => {
     const [state, dispatch] = useReducer(reducer, initialState)
 
 
+    const navigate = useNavigate();
+
+
     const getBgColor = (index) => {
         return { backgroundColor: getColor(index) };
     };
 
 
-    // useEffect(() => {
+    useEffect(() => {
+        const controller = new AbortController();
+        const signal = controller.signal;
 
-    //     const controller = new AbortController()
-    //     const signal = controller.signal
-    //     async function getDataPosts() {
+        async function getRecentPostsData() {
+            try {
+                const response = await getRecentPosts(5, signal);
+                dispatch({
+                    type: "SET_RECENT_POSTS",
+                    payload: response || [],
+                });
+                dispatch({
+                    type: "SET_LOADING_RECENT_POSTS",
+                    payload: false,
+                });
+            } catch (error) {
+                dispatch({
+                    type: "SET_RECENT_POSTS",
+                    payload: [],
+                });
+                dispatch({
+                    type: "SET_LOADING_RECENT_POSTS",
+                    payload: false,
+                });
+                toast.error("Error fetching data!", {
+                    position: "top-right",
+                });
+            }
+        }
 
-    //         try {
-    //             const response = await getPosts(signal)
-    //             if (response && response.length > 0) {
-    //                 dispatch({ type: "SET_POSTS_LOADING", payload: false });
-    //                 dispatch({ type: "SET_POSTS", payload: response });
-    //             } else if (response && response.length === 0) {
-    //                 dispatch({ type: "SET_POSTS_LOADING", payload: false });
-    //                 dispatch({ type: "SET_POSTS", payload: [] });
-    //             }
+        getRecentPostsData();
 
-    //         } catch (error) {
-    //             dispatch({ type: "SET_POSTS_LOADING", payload: false })
-    //             dispatch({ type: "SET_POSTS", payload: [] })
-    //             toast.error('Error fetching data!', {
-    //                 position: "top-right",
-    //             })
-    //         }
-    //     }
+        return () => {
+            controller.abort(); // Cleanup the fetch on component unmount
+        };
+    }, []);
 
-    //     getDataPosts()
-    //     return () => {
-    //         controller.abort()
-    //     }
-
-    // }, [])
 
 
     return (
@@ -81,20 +91,42 @@ const Home = () => {
 
                 {/* Grid */}
                 <div className="grid grid-cols-5 gap-2 h-[500px]">
-                    {/* 1 (spans multiple cells) */}
-                    <div style={getBgColor(0)} className="col-span-3 row-span-2 rounded-lg h-full"></div>
+                    {!state.loadingRecentPosts && state.recentPosts.map((item, index) => {
+                        if (index === 0) {
+                            return (
+                                <Link className="col-span-3 row-span-2 rounded-lg h-full" onClick={() => { navigate(`/readpost/${item._id}`) }} to={`/readpost/${item._id}`}>
+                                    <div className="flex flex-col p-4 gap-2">
+                                        <span className="text-lg font-semibold">{item.title}</span>
+                                        <span className="text-xs">{item.author}</span>
+                                        <div className="bg-white rounded-lg p-2 truncate text-ellipsis h-full">
+                                            <span className="text-sm">{item.description}</span>
 
-                    {/* 2 */}
-                    <div style={getBgColor(1)} className="rounded-lg h-[250px]"></div>
+                                        </div>
+                                        <div>
 
-                    {/* 3 */}
-                    <div style={getBgColor(2)} className="rounded-lg h-[250px]"></div>
 
-                    {/* 4 */}
-                    <div style={getBgColor(3)} className="rounded-lg h-[250px]"></div>
+                                        </div>
+                                    </div>
 
-                    {/* 5 */}
-                    <div style={getBgColor(4)} className="rounded-lg h-[250px]"></div>
+                                </Link>
+                            )
+                        } else {
+                            return (
+                                <Link className="rounded-lg h-[250px]" onClick={() => { navigate(`/readpost/${item._id}`) }} to={`/readpost/${item._id}`}>
+                                    <div className="flex flex-col p-4 gap-2 text-ellipsis truncate">
+                                        <span className="text-lg font-semibold">{item.title}</span>
+                                        <span className="text-xs">{item.author}</span>
+                                        <div className="bg-white rounded-lg p-2 truncate text-ellipsis h-full">
+                                            <span className="text-sm">{item.description}</span>
+
+                                        </div>
+                                    </div>
+
+                                </Link>
+                            )
+                        }
+                    })}
+
                 </div>
             </div>
 

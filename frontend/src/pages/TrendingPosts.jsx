@@ -33,7 +33,7 @@ const reducer = (state, action) => {
                     sortedPosts.sort((a, b) => a.author.localeCompare(b.author));
                     break;
                 case 'likesCount':
-                    sortedPosts.sort((a, b) => a.likeCount - b.likeCount);
+                    sortedPosts.sort((a, b) => b.likeCount - a.likeCount);
                     break;
                 default:
                     break;

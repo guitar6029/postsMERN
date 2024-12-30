@@ -1,9 +1,9 @@
 const express = require('express');
-const database = require('../connect');
+const database = require('../../connect');
 const ObjectId = require('mongodb').ObjectId;
-const authMiddleware = require('../middleware/auth/authMiddleware');
-const attachUserIdMiddleware = require('../middleware/auth/attachUserIdMiddleware');
-const dynamicUserPropertiesMiddleware = require('../middleware/dynamicUserPropertiesMiddlware');
+const authMiddleware = require('../../middleware/auth/authMiddleware');
+const attachUserIdMiddleware = require('../../middleware/auth/attachUserIdMiddleware');
+const dynamicUserPropertiesMiddleware = require('../../middleware/dynamicUserPropertiesMiddlware');
 require('dotenv').config({ path: './config.env' });
 
 
@@ -12,24 +12,21 @@ require('dotenv').config({ path: './config.env' });
 const userPropertiesMiddleware = dynamicUserPropertiesMiddleware(['firstName', 'lastName']);
 
 
-
 let postRoutes = express.Router();
 
 // 1. Retrieve all posts
 postRoutes.route("/posts").get(authMiddleware, async (request, response) => {
     try {
-        let db = database.getDataBase();
-        let data = await db.collection("posts").find({}).toArray();
+        const db = await database.getDataBase();
+        const data = await db.collection("posts").find({}).toArray();
 
-        if (data.length > 0) {
-            response.json(data);
-        } else {
-            response.status(404).json({ error: "No posts found." });
-        }
+        // Return the data, even if the array is empty
+        response.status(200).json(data);
     } catch (error) {
         response.status(500).json({ error: "An error occurred while retrieving posts", details: error.message });
     }
 });
+
 
 // 2. Retrieve a single post by ID
 postRoutes.route("/posts/:id").get(authMiddleware, async (request, response) => {
@@ -118,24 +115,21 @@ postRoutes.route("/posts/:id").delete(authMiddleware, async (request, response) 
 });
 
 
-// get all post by user id (_id)
+// Get all posts by user ID (_id)
 postRoutes.route("/posts/user/all").get(authMiddleware, attachUserIdMiddleware, async (request, response) => {
     try {
-        const db = database.getDataBase();
-        // Use the attached user ID from the middleware
-        const userId = request.userId; 
+        const db = await database.getDataBase();
+        const userId = request.userId; // Use the attached user ID from middleware
 
         if (!userId) {
             return response.status(401).json({ error: "User ID not found in token" });
         }
 
-        //.find({ creatorsID: new ObjectId(userId) })
+        // Retrieve posts by userId
         const data = await db.collection("posts").find({ creatorsID: userId.toString() }).toArray();
-        if (data.length > 0) {
-            response.json(data);
-        } else {
-            response.status(404).json({ error: "No posts found." });
-        }
+
+        // Respond with the data, even if it's an empty array
+        response.status(200).json(data);
     } catch (error) {
         response.status(500).json({ error: "An error occurred while retrieving posts", details: error.message });
     }
@@ -194,6 +188,7 @@ postRoutes.route("/posts/delete-one/:id").get(authMiddleware, attachUserIdMiddle
         response.status(500).json({ error: "An error occurred while deleting the post", details: error.message });
     }
 });
+
 
 
 module.exports = postRoutes;

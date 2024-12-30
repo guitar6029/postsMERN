@@ -2,12 +2,10 @@
 const connect = require("./connect");
 const express = require("express");
 const cors = require("cors");
-const posts = require("./routes/postRoutes");
+const posts = require("./routes/post/postRoutes");
 const likesRoutes = require('./routes/likesRoutes');
 const userRoutes = require('./routes/userRoutes');
-
-
-
+const recentRoutes = require("./routes/post/recentRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +18,7 @@ app.use(express.json());
 app.use(posts);
 app.use(likesRoutes);
 app.use(userRoutes);
+app.use(recentRoutes);
 
 // Start server
 const startServer = async () => {

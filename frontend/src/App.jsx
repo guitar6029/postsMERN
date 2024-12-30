@@ -3,6 +3,7 @@ import './custom-classes.css';
 import { Routes, Route } from 'react-router-dom';
 import { useEffect } from 'react';
 import Home from './pages/Home';
+import Page404 from './pages/Page404';
 import Landing from './pages/Landing';
 import Account from './pages/Account';
 import ReadPost from './pages/ReadPost';
@@ -42,7 +43,7 @@ function App() {
           ,<Route path="/subscription" element={<ProtectedRoute><Subscription /></ProtectedRoute> } />
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           {/* Add a wildcard route to catch all other paths */}
-          <Route path="*" element={<Landing />} />
+          <Route path="*" element={<Page404 />} />
         </Route>
       </Routes>
     </UserProvider>
