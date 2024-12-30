@@ -7,47 +7,20 @@ import { getColor } from '../utils/Colors';
 
 
 const initialState = {
-    sortBy: 'title',
-    posts: [],
-    loadingPosts: true
+    recentPosts: [],
+    loadingRecentPoasts: true
 }
 
-
 const reducer = (state, action) => {
-
-    let sortedPosts;
-
-    switch (action.type) {
-        case "SET_POSTS_LOADING":
-            return { ...state, loadingPosts: action.payload };
-        case "SET_SORT_BY":
-            sortedPosts = [...state.posts]; // Create a copy to sort
-
-            switch (action.payload) {
-                case 'dateCreated':
-                    sortedPosts.sort((a, b) => new Date(a.dateCreated) - new Date(b.dateCreated));
-                    break;
-                case 'title':
-                    sortedPosts.sort((a, b) => a.title.localeCompare(b.title));
-                    break;
-                case 'author':
-                    sortedPosts.sort((a, b) => a.author.localeCompare(b.author));
-                    break;
-                case 'likesCount':
-                    sortedPosts.sort((a, b) => a.likeCount - b.likeCount);
-                    break;
-                default:
-                    break;
-            }
-            return { ...state, posts: sortedPosts, sortBy: action.payload }; // Update sortedPosts and sortBy
-
-        case "SET_POSTS":
-            return { ...state, posts: action.payload };
-
+    switch(action.type) {
+        case "SET_RECENT_POSTS":
+            return { ...state, recentPosts: action.payload }
+        case "SET_LOADING_RECENT_POSTS":
+            return { ...state, loadingRecentPoasts: action.payload }
         default:
-            return state;
+            return state
     }
-};
+}
 
 
 const Home = () => {
@@ -61,37 +34,37 @@ const Home = () => {
     };
 
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const controller = new AbortController()
-        const signal = controller.signal
-        async function getDataPosts() {
+    //     const controller = new AbortController()
+    //     const signal = controller.signal
+    //     async function getDataPosts() {
 
-            try {
-                const response = await getPosts(signal)
-                if (response && response.length > 0) {
-                    dispatch({ type: "SET_POSTS_LOADING", payload: false });
-                    dispatch({ type: "SET_POSTS", payload: response });
-                } else if (response && response.length === 0) {
-                    dispatch({ type: "SET_POSTS_LOADING", payload: false });
-                    dispatch({ type: "SET_POSTS", payload: [] });
-                }
+    //         try {
+    //             const response = await getPosts(signal)
+    //             if (response && response.length > 0) {
+    //                 dispatch({ type: "SET_POSTS_LOADING", payload: false });
+    //                 dispatch({ type: "SET_POSTS", payload: response });
+    //             } else if (response && response.length === 0) {
+    //                 dispatch({ type: "SET_POSTS_LOADING", payload: false });
+    //                 dispatch({ type: "SET_POSTS", payload: [] });
+    //             }
 
-            } catch (error) {
-                dispatch({ type: "SET_POSTS_LOADING", payload: false })
-                dispatch({ type: "SET_POSTS", payload: [] })
-                toast.error('Error fetching data!', {
-                    position: "top-right",
-                })
-            }
-        }
+    //         } catch (error) {
+    //             dispatch({ type: "SET_POSTS_LOADING", payload: false })
+    //             dispatch({ type: "SET_POSTS", payload: [] })
+    //             toast.error('Error fetching data!', {
+    //                 position: "top-right",
+    //             })
+    //         }
+    //     }
 
-        getDataPosts()
-        return () => {
-            controller.abort()
-        }
+    //     getDataPosts()
+    //     return () => {
+    //         controller.abort()
+    //     }
 
-    }, [])
+    // }, [])
 
 
     return (

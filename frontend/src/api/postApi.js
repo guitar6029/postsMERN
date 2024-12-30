@@ -101,3 +101,16 @@ export async function userAllowedToDeletePost(id, signal) {
         console.error("Error fetching data:", error)
     }
 }
+
+
+//get most recent posts, limit to argument maxPosts
+export async function getRecentPosts(maxPosts = 5, signal) {
+    try {
+        const response = await axios.get(`${URI}/posts/recent/${maxPosts}`, { signal })
+        if (response.status === 200) {
+            return response.data
+        }
+    } catch (error) {
+        console.error("Error fetching data:", error)
+    }
+}
