@@ -159,7 +159,7 @@ const ReadPost = () => {
     return (
         <>
             {state.confirmModalIsOpen && (
-                <Modal title="Delete Post" typeOfConfirmation="delete" onClose={handleCloseModal} onDelete={handleModalAndCallback} />
+                <Modal  typeOfConfirmation="delete" onClose={handleCloseModal} onDelete={handleModalAndCallback} />
             )}
 
             <div className="flex flex-col rounded-lg gap-4 p-4">
@@ -188,7 +188,7 @@ const ReadPost = () => {
                     </div>
                     {state.allowedToDeletePost && (
                         <div className="flex flex-row justify-end">
-                            <div className="rounded-full w-fit p-2 bg-[#ddbebc] hover:cursor-pointer">
+                            <div className="rounded-full w-fit p-2 hover:scale-105 hover:cursor-pointer">
                                 <Trash2 onClick={confirmModalForPostDelete} />
                             </div>
                         </div>
