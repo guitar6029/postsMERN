@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useEffect, useReducer } from 'react'
 import { useUserContext } from '../context/userContext';
 import PostContainer from '../components/PostContainer';
+import { getColor } from '../utils/Colors';
 
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
 
 
 const reducer = (state, action) => {
+
     let sortedPosts;
 
     switch (action.type) {
@@ -54,6 +56,15 @@ const Home = () => {
 
     const { user } = useUserContext()
     const [state, dispatch] = useReducer(reducer, initialState)
+
+
+
+    
+
+    const getBgColor = (index) => {
+        return { backgroundColor: getColor(index) };
+    };
+
 
 
     useEffect(() => {
@@ -115,19 +126,19 @@ const Home = () => {
                     {/* Grid */}
                     <div className="grid grid-cols-5 gap-2 h-[500px]">
                         {/* 1 (spans multiple cells) */}
-                        <div className="col-span-3 row-span-2 bg-black rounded-lg h-full"></div>
+                        <div style={getBgColor(0)} className="col-span-3 row-span-2 rounded-lg h-full"></div>
 
                         {/* 2 */}
-                        <div className="bg-black rounded-lg h-[250px]"></div>
+                        <div style={getBgColor(1)} className="rounded-lg h-[250px]"></div>
 
                         {/* 3 */}
-                        <div className="bg-black rounded-lg h-[250px]"></div>
+                        <div style={getBgColor(2)} className="rounded-lg h-[250px]"></div>
 
                         {/* 4 */}
-                        <div className="bg-black rounded-lg h-[250px]"></div>
+                        <div style={getBgColor(3)} className="rounded-lg h-[250px]"></div>
 
                         {/* 5 */}
-                        <div className="bg-black rounded-lg h-[250px]"></div>
+                        <div style={getBgColor(4)} className="rounded-lg h-[250px]"></div>
                     </div>
                 </div>
 
