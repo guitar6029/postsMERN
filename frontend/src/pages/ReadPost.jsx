@@ -154,6 +154,11 @@ const ReadPost = () => {
                 console.error("Error fetching data:", error);
             }
         }
+
+        //clean up the controller
+        return () => {
+            controller.abort();
+        }
     }
 
     return (

@@ -5,7 +5,7 @@ import { useEffect, useReducer } from 'react'
 import { useUserContext } from '../context/userContext';
 import { getColor } from '../utils/Colors';
 import { Link, useNavigate } from "react-router-dom";
-
+import { BookOpenText } from 'lucide-react';
 
 const initialState = {
     recentPosts: [],
@@ -83,11 +83,12 @@ const Home = () => {
                 <h1 className="text-3xl text-[#000] font-bold">{getGreeting()} {user?.firstName}</h1>
             </div>
 
-
-            {/* the grid view */}
             <div className="space-y-2">
                 {/* Title */}
-                <div className="text-xl font-bold">Recent Posts</div>
+                <div className="flex flex-row items-center gap-2">
+                <h3 className="text-xl font-bold">Recent Posts</h3>
+                <BookOpenText size={20} />
+                </div>
 
                 {/* Grid */}
                 <div className="grid grid-cols-5 gap-2 h-[500px]">
