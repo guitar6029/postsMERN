@@ -1,16 +1,10 @@
-import { createUser } from '../api/userApi';
-import { StickyNote } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import { useReducer } from 'react';
-import axios from 'axios';
-
-import { HandMetal } from 'lucide-react';
-import { EyeClosed } from 'lucide-react';
-import { Eye } from 'lucide-react';
-
-import { Link } from 'react-router-dom';
+import { HandMetal, EyeClosed, Eye } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUserContext } from "../context/userContext";
+import { useEffect, useReducer } from 'react';
+import axios from 'axios';
+import { createUser } from '../api/userApi';
+import { ToastContainer, toast } from 'react-toastify';
 
 const CreateNewUser = () => {
     const navigate = useNavigate();
@@ -40,6 +34,8 @@ const CreateNewUser = () => {
                 return { ...state, confirmPassword: action.payload };
             case 'SET_IS_SUBMIT_FORM_BTN_DISABLED':
                 return { ...state, isSubmitFormBtnDisabled: action.payload };
+            case 'RESET_FORM':
+                return initialState;
             case 'SET_PASSWORD_IS_HIDDEN':
                 return { ...state, passwordIsHidden: action.payload };
             default:
@@ -48,6 +44,11 @@ const CreateNewUser = () => {
     };
 
     const [state, dispatch] = useReducer(reducer, initialState);
+
+    useEffect(() => {
+        // Reset form state when component mounts
+        dispatch({ type: 'RESET_FORM' });
+    }, []);
 
     const handleToggleShowPassword = () => {
         dispatch({ type: 'SET_PASSWORD_IS_HIDDEN', payload: !state.passwordIsHidden });
@@ -77,20 +78,15 @@ const CreateNewUser = () => {
             if (response && response.status === 201) {
                 const { token, user } = response.data;
 
-                // Store token  in session storage
+                // Store token in session storage
                 sessionStorage.setItem('token', token);
-                setUserProperties(user)
-
+                setUserProperties(user);
 
                 // Set Axios authorization header
                 axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 
                 // Clear the form
-                dispatch({ type: 'SET_FIRST_NAME', payload: '' });
-                dispatch({ type: 'SET_LAST_NAME', payload: '' });
-                dispatch({ type: 'SET_EMAIL', payload: '' });
-                dispatch({ type: 'SET_PASSWORD', payload: '' });
-                dispatch({ type: 'SET_CONFIRM_PASSWORD', payload: '' });
+                dispatch({ type: 'RESET_FORM' });
 
                 // Redirect to home page
                 navigate('/home');
@@ -109,11 +105,10 @@ const CreateNewUser = () => {
 
     return (
         <>
-            <form onSubmit={handleCreateNewUser} >
-                <div className="flex flex-col gap-4 w-full p-4 bg-slate-100 rounded-lg ">
+            <form onSubmit={handleCreateNewUser}>
+                <div className="flex flex-col gap-4 w-full p-4 bg-slate-100 rounded-lg">
                     <div className="flex flex-row items-center gap-2">
                         <span className="text-2xl font-bold">Create New User</span>
-                        <StickyNote />
                     </div>
                     <div className="flex flex-col gap-1">
                         <h3 className="font-semibold">First Name</h3>

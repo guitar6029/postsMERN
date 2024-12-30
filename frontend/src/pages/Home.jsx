@@ -60,8 +60,6 @@ const Home = () => {
 
         const controller = new AbortController()
         const signal = controller.signal
-
-        dispatch({ type: "SET_POSTS_LOADING", payload: true })
         async function getDataPosts() {
 
             try {
@@ -69,10 +67,14 @@ const Home = () => {
                 if (response && response.length > 0) {
                     dispatch({ type: "SET_POSTS_LOADING", payload: false });
                     dispatch({ type: "SET_POSTS", payload: response });
+                } else if (response && response.length === 0) {
+                    dispatch({ type: "SET_POSTS_LOADING", payload: false });
+                    dispatch({ type: "SET_POSTS", payload: [] });
                 }
 
             } catch (error) {
                 dispatch({ type: "SET_POSTS_LOADING", payload: false })
+                dispatch({ type: "SET_POSTS", payload: [] })
                 toast.error('Error fetching data!', {
                     position: "top-right",
                 })
@@ -141,7 +143,9 @@ const Home = () => {
             </div>
         )
 
-    } else {
+    } 
+    
+    if (state.loadingPosts === false && state.posts && state.posts.length === 0) {
         return (
             <>
                 <div className="flex flex-col w-full text-center gap-4 justify-center items-center">
