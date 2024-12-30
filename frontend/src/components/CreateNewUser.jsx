@@ -10,9 +10,11 @@ import { EyeClosed } from 'lucide-react';
 import { Eye } from 'lucide-react';
 
 import { Link } from 'react-router-dom';
+import { useUserContext } from "../context/userContext";
 
 const CreateNewUser = () => {
     const navigate = useNavigate();
+    const { setUserProperties } = useUserContext();
 
     const initialState = {
         firstName: '',
@@ -72,12 +74,13 @@ const CreateNewUser = () => {
             };
 
             let response = await createUser(userObject, signal);
-
             if (response && response.status === 201) {
                 const { token, user } = response.data;
 
                 // Store token  in session storage
                 sessionStorage.setItem('token', token);
+                setUserProperties(user)
+
 
                 // Set Axios authorization header
                 axios.defaults.headers.common["Authorization"] = "Bearer " + token;

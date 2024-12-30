@@ -1,8 +1,7 @@
-import { useEffect, useState, useReducer } from "react";
 import { getAllPostsByUser } from "../api/postApi";
-import axios from "axios";
 import { List, Grid3x3 } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
+import { useEffect, useReducer } from "react";
 import PostContainer from "../components/PostContainer";
 
 const Account = () => {
@@ -29,9 +28,6 @@ const Account = () => {
     }
 
     const [state, dispatch] = useReducer(reducer, initialState)
-
-
-    const [userPosts, setUserPosts] = useState([]);
 
     useEffect(() => {
         const controller = new AbortController()
@@ -97,7 +93,9 @@ const Account = () => {
                     
                 </div>
             </div>
-        </>);
+            <ToastContainer />
+        </>
+        );
 }
 
 export default Account

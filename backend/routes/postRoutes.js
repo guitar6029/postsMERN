@@ -131,7 +131,6 @@ postRoutes.route("/posts/user/all").get(authMiddleware, attachUserIdMiddleware, 
 
         //.find({ creatorsID: new ObjectId(userId) })
         const data = await db.collection("posts").find({ creatorsID: userId.toString() }).toArray();
-        console.log("data ::", data)
         if (data.length > 0) {
             response.json(data);
         } else {

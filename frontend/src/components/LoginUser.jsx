@@ -83,7 +83,7 @@ const LoginUser = () => {
 
                 <form onSubmit={handleVerifyUser}>
 
-                    <div className="flex flex-col justify-center items-center gap-2 p-4 rounded-lg bg-white">
+                    <div className="flex flex-col justify-center items-center gap-2 p-4 rounded-lg bg-white border-solid border-2 border-black">
                         <h3 className="text-2xl font-extrabold text-[#CD6A65] transition duration-300 ease-in-out">Login</h3>
                         <div className="flex flex-row items-center w-full max-w-md">
                             <div className="w-1/4">

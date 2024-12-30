@@ -73,12 +73,12 @@ userRoutes.route("/users").post(async (request, response) => {
             };
             // if user does not exist, create new user 
 
-            let result = await db.collection("users").insertOne(userObject);
-            const createdUser = result.ops[0]
+            let result = await db.collection("users").insertOne(userObject); 
+            const createdUser = { _id: result.insertedId, ...userObject };
             
             const token = jwt.sign({ userId: createdUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
             const { password, ...userWithoutPassword } = createdUser; 
-            return res.json({ success: true, token, user: userWithoutPassword });
+            return response.status(201).json({ success: true, token, user: userWithoutPassword });
 
 
         }

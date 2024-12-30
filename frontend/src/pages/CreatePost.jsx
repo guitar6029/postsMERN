@@ -73,6 +73,10 @@ const CreatePost = () => {
                     <h3 className="font-semibold">Description</h3>
                     <textarea onChange={(e) => dispatch({ type: "SET_DESCRIPTION", payload: e.target.value })} required maxLength={1000} className="rounded-lg p-1 " value={state.description} type="text" name="description" id="description" placeholder='Write Something cool...' />
                 </div>
+                <div className="flex flex-row gap-2">
+                    <span>Add Tags</span>
+                    
+                </div>
                 <div className="flex flex-row mt-2">
                     <button type="submit" disabled={!state.title || !state.description} className="p-2 bg-teal-100 rounded-lg hover:bg-teal-500 transition duration-300 ease-in-out hover:text-white disabled:opacity-50">Post It ! 🚀 </button>
                 </div>
