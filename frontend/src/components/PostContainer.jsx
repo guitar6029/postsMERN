@@ -42,9 +42,9 @@ const PostContainer = ({ post, index, viewType = 'preview' }) => {
                 </div>
             )}
             {viewType === "grid" && (
-                <div className="flex flex-col p-2 rounded-lg" style={bgColorStyle}>
+                <div className="flex flex-col p-2 rounded-lg min-h-[100px] max-h-[250px] overflow-hidden" style={bgColorStyle}>
                 <span className="text-xs font-semibold truncate text-ellipsis">{post.title}</span>
-                <span className="text-xs">{post.description}</span>
+                <p className="text-xs truncate text-ellipsis">{post.description}</p>
                 <span className="text-xs">{getDateString(post.dateCreated)}</span>
             </div>
             )}

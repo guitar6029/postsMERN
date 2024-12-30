@@ -83,7 +83,7 @@ const LoginUser = () => {
 
                 <form onSubmit={handleVerifyUser}>
 
-                    <div className="flex flex-col justify-center items-center gap-2 p-4 rounded-lg bg-white border-solid border-2 border-black">
+                    <div className="flex flex-col justify-center items-center gap-2 p-4 rounded-lg bg-white border-solid border-2 border-slate-300">
                         <h3 className="text-2xl font-extrabold text-[#CD6A65] transition duration-300 ease-in-out">Login</h3>
                         <div className="flex flex-row items-center w-full max-w-md">
                             <div className="w-1/4">
@@ -115,7 +115,7 @@ const LoginUser = () => {
                         <hr />
                         <div className="flex flex-row gap-2 items-center">
                             <span>Don&apos;t have an account?</span>
-                            <Link to="/join"><button className="text-sm text-slate-600 hover:underline">Create New User</button></Link>
+                            <Link to="/join"><button className="text-sm text-slate-600 hover:underline hover-sky-600-text">Sign Up</button></Link>
                         </div>
                     </div>
                 </form>

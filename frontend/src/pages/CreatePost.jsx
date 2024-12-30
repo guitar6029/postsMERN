@@ -74,7 +74,7 @@ const CreatePost = () => {
                     <textarea className="min-h-[500px] rounded-lg p-1 " onChange={(e) => dispatch({ type: "SET_DESCRIPTION", payload: e.target.value })} required maxLength={1000}  value={state.description} type="text" name="description" id="description" placeholder='Write Something cool...' />
                 </div>
                 <div className="flex flex-row gap-2">
-                    <span>Add Tags</span>
+                    <span>+ Add Tags</span>
 
                 </div>
                 <div className="flex flex-row mt-2">

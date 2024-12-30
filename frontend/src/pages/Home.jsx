@@ -95,13 +95,50 @@ const Home = () => {
         )
     }
 
+
+
     if (state.loadingPosts === false && state.posts && state.posts.length > 0) {
 
         return (
 
-            <div className="flex flex-col w-full gap-4 justify-center">
-                <div className="flex flex-row justify-between">
+            <div className="flex flex-col w-full gap-4 ">
+                <div className="flex flex-row">
                     <h1 className="text-3xl text-[#000] font-bold">{getGreeting()} {user?.firstName}</h1>
+                </div>
+
+
+                {/* the grid view */}
+                <div className="space-y-2">
+                    {/* Title */}
+                    <div className="text-xl font-bold">Recent Posts</div>
+
+                    {/* Grid */}
+                    <div className="grid grid-cols-5 gap-2 h-[500px]">
+                        {/* 1 (spans multiple cells) */}
+                        <div className="col-span-3 row-span-2 bg-black rounded-lg h-full"></div>
+
+                        {/* 2 */}
+                        <div className="bg-black rounded-lg h-[250px]"></div>
+
+                        {/* 3 */}
+                        <div className="bg-black rounded-lg h-[250px]"></div>
+
+                        {/* 4 */}
+                        <div className="bg-black rounded-lg h-[250px]"></div>
+
+                        {/* 5 */}
+                        <div className="bg-black rounded-lg h-[250px]"></div>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+                <div className="flex flex-row justify-between">
                     <div className="flex flex-row items-center gap-4">
                         <div>
                             <select onChange={(e) => dispatch({ type: "SET_SORT_BY", payload: e.target.value })} className="p-2 rounded hover:cursor-pointer" name="sortBy" id="sortBy">
@@ -143,8 +180,8 @@ const Home = () => {
             </div>
         )
 
-    } 
-    
+    }
+
     if (state.loadingPosts === false && state.posts && state.posts.length === 0) {
         return (
             <>
