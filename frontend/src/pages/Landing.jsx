@@ -1,4 +1,4 @@
-import LoginUser from "../components/LoginUser";
+import LoginUser from "../pages/LoginUser";
 
 const Landing = () => {
     return (

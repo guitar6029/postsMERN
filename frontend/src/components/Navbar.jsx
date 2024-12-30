@@ -62,7 +62,7 @@ const NavBar = () => {
                         >
                             {link.name}
                         </Link>
-                    )).slice(0, 2)}
+                    )).slice(0, 3)}
                 </div>
                 <div className="relative">
                     <button onClick={handleShowDropdown} className="rounded-full p-2 hover:bg-[#5C211E] transition duration-300 ease-in-out">

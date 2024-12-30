@@ -7,10 +7,11 @@ import Landing from './pages/Landing';
 import Account from './pages/Account';
 import ReadPost from './pages/ReadPost';
 import CreatePost from './pages/CreatePost';
-import CreateNewUser from './components/CreateNewUser';
+import CreateNewUser from './pages/CreateNewUser';
 import Settings from './pages/Settings';
 import Subscription from './pages/Subscription';
 import Layout from './components/Layout';
+import TrendingPosts from './pages/TrendingPosts';
 import ProtectedRoute from './components/ProtectedRoute'; // Import the ProtectedRoute component
 import axios from 'axios';
 import { UserProvider } from './context/userContext';
@@ -34,6 +35,7 @@ function App() {
         {/* All other routes will be nested inside Layout */}
         <Route path="/" element={<Layout />}>
           <Route path="home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="trending" element={<ProtectedRoute><TrendingPosts /></ProtectedRoute>} />
           <Route path="account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
           <Route path="createpost" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
           <Route path="readpost/:id" element={<ProtectedRoute><ReadPost /></ProtectedRoute>} />

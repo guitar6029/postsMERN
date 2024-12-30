@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { loginUser } from "../api/loginApi";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useState, useReducer } from "react";
+import { useReducer } from "react";
 import axios from "axios";
 import { useUserContext } from "../context/userContext";
 

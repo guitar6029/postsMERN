@@ -3,6 +3,10 @@ export const links = [
         path: '/home',
         name: 'Home'
     },
+    {
+        path: '/trending',
+        name: 'Trending'
+    },
     
     {
         path: '/createpost',

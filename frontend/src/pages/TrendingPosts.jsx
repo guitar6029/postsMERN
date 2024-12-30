@@ -1,9 +1,8 @@
-import { getGreeting } from '../utils/StringUtils';
+import { Flame } from 'lucide-react';
 import { getPosts } from '../api/postApi';
 import { ToastContainer, toast } from 'react-toastify';
 import { useEffect, useReducer } from 'react'
-import { useUserContext } from '../context/userContext';
-import { getColor } from '../utils/Colors';
+import PostContainer from '../components/PostContainer';
 
 
 const initialState = {
@@ -49,22 +48,15 @@ const reducer = (state, action) => {
     }
 };
 
+const TrendingPosts = () => {
 
-const Home = () => {
-
-    const { user } = useUserContext()
     const [state, dispatch] = useReducer(reducer, initialState)
-
-
-    const getBgColor = (index) => {
-        return { backgroundColor: getColor(index) };
-    };
-
 
     useEffect(() => {
 
         const controller = new AbortController()
         const signal = controller.signal
+
         async function getDataPosts() {
 
             try {
@@ -94,42 +86,55 @@ const Home = () => {
     }, [])
 
 
-    return (
-        <div className="flex flex-col w-full gap-4 ">
-            <div className="flex flex-row">
-                <h1 className="text-3xl text-[#000] font-bold">{getGreeting()} {user?.firstName}</h1>
+
+    if (state.loadingPosts) {
+        return (
+            <div className="flex flex-row items-center">
+                <h1>Loading...</h1>
             </div>
+        )
+    }
 
+    if (state.loadingPosts === false && state.posts && state.posts.length > 0) {
 
-            {/* the grid view */}
-            <div className="space-y-2">
-                {/* Title */}
-                <div className="text-xl font-bold">Recent Posts</div>
+        return (
+            <div className="flex flex-col gap-2">
 
-                {/* Grid */}
-                <div className="grid grid-cols-5 gap-2 h-[500px]">
-                    {/* 1 (spans multiple cells) */}
-                    <div style={getBgColor(0)} className="col-span-3 row-span-2 rounded-lg h-full"></div>
-
-                    {/* 2 */}
-                    <div style={getBgColor(1)} className="rounded-lg h-[250px]"></div>
-
-                    {/* 3 */}
-                    <div style={getBgColor(2)} className="rounded-lg h-[250px]"></div>
-
-                    {/* 4 */}
-                    <div style={getBgColor(3)} className="rounded-lg h-[250px]"></div>
-
-                    {/* 5 */}
-                    <div style={getBgColor(4)} className="rounded-lg h-[250px]"></div>
+                <div className="flex flex-row items-center gap-2">
+                    <h1 className="font-semibold">Trending Posts</h1>
+                    <Flame className="text-orange-300 fill-red-700" size={24} />
                 </div>
+
+
+                <div className="flex flex-row justify-between">
+                    <div className="flex flex-row items-center gap-4">
+                        <div>
+                            <select onChange={(e) => dispatch({ type: "SET_SORT_BY", payload: e.target.value })} className="p-2 rounded hover:cursor-pointer" name="sortBy" id="sortBy">
+                                <option value="dateCreated">Date Created</option>
+                                <option value="title">Title</option>
+                                <option value="author">Author</option>
+                                <option value="likesCount">Likes</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div className="flex flex-col gap-1 w-full">
+                    {state.posts.map((post, index) => {
+                        return (<PostContainer key={index} post={post} index={index} />)
+                    })}
+                </div>
+
+                <ToastContainer />
             </div>
 
-        </div>
-    );
+        )
 
+    }
 
 
 }
 
-export default Home;
+export default TrendingPosts;
