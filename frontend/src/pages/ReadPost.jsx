@@ -1,7 +1,7 @@
 import { deletePost } from "../api/postApi";
 import { getColor } from "../utils/Colors";
 import { getPost } from "../api/postApi";
-import { ThumbsUp, ThumbsDown, Heart, Trash2 } from 'lucide-react';
+import { ThumbsUp, Heart, Trash2 } from 'lucide-react';
 import { toast, ToastContainer } from "react-toastify";
 import { updateLikeForPost } from "../api/likesApi";
 import { useEffect, useReducer } from "react";
@@ -9,6 +9,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Modal from "../components/modal/modal";
 import { userAllowedToDeletePost } from "../api/postApi";
+import { getDateString } from "../utils/DateUtil";
 
 const initialState = {
     singlePostData: {},
@@ -44,37 +45,33 @@ const ReadPost = () => {
     const params = useParams();
     const id = params.id;
 
-    // Memoize the background color
     useEffect(() => {
         const bgColor = getColor(Math.floor(Math.random() * 10));
         dispatch({ type: 'SET_BG_COLOR', payload: bgColor });
     }, []);
 
-    //call on once on load to check if user can delete post
     useEffect(() => {
-
         const controller = new AbortController();
         const signal = controller.signal;
 
-        const checkIfCanDeletePsot = async () => {
+        const checkIfCanDeletePost = async () => {
             try {
                 const response = await userAllowedToDeletePost(id, signal);
                 if (response && response.status === 200) {
-                    dispatch({ type: "SET_ALLOWED_TO_DELETE_POST", payload: true })
+                    dispatch({ type: "SET_ALLOWED_TO_DELETE_POST", payload: true });
                 }
             } catch (error) {
-                dispatch({ type: "SET_ALLOWED_TO_DELETE_POST", payload: false })
+                dispatch({ type: "SET_ALLOWED_TO_DELETE_POST", payload: false });
                 toast.error('Error deleting post!', { position: "top-right" });
             }
         }
 
-        checkIfCanDeletePsot(id);
+        checkIfCanDeletePost(id);
 
-        //clean up
         return () => {
             controller.abort();
         }
-    }, [])
+    }, [id]);
 
     const confirmModalForPostDelete = () => {
         dispatch({ type: 'SET_CONFIRM_MODAL_OPEN', payload: true });
@@ -88,7 +85,7 @@ const ReadPost = () => {
             const response = await deletePost(id, signal);
             if (response && response.status === 200) {
                 toast.success('Post deleted successfully!', { position: "top-right" });
-                navigate('/home'); // Redirect to home page
+                navigate('/home');
             } else {
                 toast.error('Error deleting post!', { position: "top-right" });
             }
@@ -111,6 +108,7 @@ const ReadPost = () => {
                 if (postFetch) {
                     dispatch({ type: 'SET_SINGLE_POST_DATA', payload: postFetch });
                     dispatch({ type: 'SET_LIKE_COUNT', payload: postFetch.likeCount });
+                    dispatch({ type: 'SET_ALREADY_LIKED', payload: postFetch.alreadyLiked });
                 }
             } catch (error) {
                 if (axios.isCancel(error)) {
@@ -135,17 +133,19 @@ const ReadPost = () => {
     const handleModalAndCallback = () => {
         dispatch({ type: 'SET_CONFIRM_MODAL_OPEN', payload: false });
         handleDeletePost();
-
     }
-    const handleLikeClick = async (likeNumber) => {
+
+    const handleLikeClick = async () => {
         const controller = new AbortController();
         const signal = controller.signal;
 
         try {
-            const response = await updateLikeForPost(id, { likeChange: likeNumber }, signal);
+            const likeChange = state.alreadyLiked ? -1 : 1;
+            const response = await updateLikeForPost(id, { likeChange }, signal);
             if (response) {
                 dispatch({ type: 'SET_LIKE_COUNT', payload: response.likeCount - state.likeCount });
                 dispatch({ type: 'SET_SINGLE_POST_DATA', payload: { likeCount: response.likeCount } });
+                dispatch({ type: 'SET_ALREADY_LIKED', payload: !state.alreadyLiked });
             }
         } catch (error) {
             if (axios.isCancel(error)) {
@@ -162,37 +162,40 @@ const ReadPost = () => {
                 <Modal title="Delete Post" typeOfConfirmation="delete" onClose={handleCloseModal} onDelete={handleModalAndCallback} />
             )}
 
-            <div className="flex flex-col rounded-lg gap-4 text-white p-4" style={{ backgroundColor: state.bgColor }}>
+            <div className="flex flex-col rounded-lg gap-4 p-4">
                 <div className="flex flex-row items-center justify-between">
-                    <h3 className="text-2xl sm:text-sm md:text-md lg:text-lg xl:text-xl font-bold ">{state.singlePostData.title}</h3>
+                    <h3 className="text-2xl sm:text-sm md:text-2xl lg:text-2xl xl:text-2xl font-bold ">{state.singlePostData.title}</h3>
                     <Heart className="hover:scale-110 cursor-pointer  hover:fill-rose-300 transition duration-300 ease-in" />
                 </div>
                 <div className="flex flex-row items-center gap-2">
-                    <span>Author | </span>
+                    <span>Posted by | </span>
                     <h5 className="font-bold italic">{state.singlePostData.author}</h5>
                 </div>
+                <span className="font-semibold text-sm">{getDateString(state.singlePostData.dateCreated)}</span>
                 <div className="flex flex-row gap-2 p-4 bg-white text-black rounded-lg">
                     <p>{state.singlePostData.description}</p>
                 </div>
-                <div className="flex flex-row items-center justify-between gap-2 ">
+                <div className="flex flex-row items-center justify-between gap-2">
                     <div className="flex flex-row items-center gap-2">
-                        <button onClick={() => handleLikeClick(1)} className="hover:scale-110 transition duration-300 ease-in "><ThumbsUp /></button>
-                        <button onClick={() => handleLikeClick(-1)} className="hover:scale-110 transition duration-300 ease-in "><ThumbsDown /></button>
-                        <span className="font-bold">Likes </span>
-                        <span className="flex flex-row items-center justify-center p-2 w-10 bg-white rounded-full text-black font-bold ">{state.singlePostData.likeCount}</span>
+                        <button onClick={handleLikeClick} className={`hover:scale-110 transition duration-300 ease-in ${state.alreadyLiked ? 'text-blue-500' : ''}`}>
+                            <ThumbsUp />
+                        </button>
+                        
+                        <span className="font-bold">Likes</span>
+                        <span className="flex flex-row items-center justify-center p-2 w-10 bg-white rounded-full text-black font-bold">
+                            {state.singlePostData.likeCount}
+                        </span>
                     </div>
                     {state.allowedToDeletePost && (
                         <div className="flex flex-row justify-end">
-                        <div className="rounded-full w-fit p-2 bg-[#ddbebc] hover:cursor-pointer">
-                            <Trash2 onClick={confirmModalForPostDelete} />
+                            <div className="rounded-full w-fit p-2 bg-[#ddbebc] hover:cursor-pointer">
+                                <Trash2 onClick={confirmModalForPostDelete} />
+                            </div>
                         </div>
-                    </div>
                     )}
-                    
                 </div>
             </div>
             <ToastContainer />
-
         </>
     );
 }

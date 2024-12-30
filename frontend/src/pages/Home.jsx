@@ -94,21 +94,16 @@ const Home = () => {
                     {!state.loadingRecentPosts && state.recentPosts.map((item) => {
 
                         return (
-                            <Link className="col-span-3 row-span-2 rounded-lg h-full" onClick={() => { navigate(`/readpost/${item._id}`) }} to={`/readpost/${item._id}`}>
+                            <Link className="col-span-5 row-span-2 rounded-lg h-full shadow-lg border border-gray-200" onClick={() => { navigate(`/readpost/${item._id}`) }} to={`/readpost/${item._id}`}>
                                 <div className="flex flex-col p-4 gap-2">
                                     <span className="text-lg font-semibold">{item.title}</span>
                                     <span className="text-xs">{item.author}</span>
-                                    <div className="bg-white rounded-lg p-2 truncate text-ellipsis h-full">
+                                    <div className="bg-white rounded-lg  truncate text-ellipsis h-full">
                                         <span className="text-sm">{item.description}</span>
-
-                                    </div>
-                                    <div>
-
-
                                     </div>
                                 </div>
-
                             </Link>
+
                         )
 
                     })}
