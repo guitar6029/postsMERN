@@ -91,40 +91,26 @@ const Home = () => {
 
                 {/* Grid */}
                 <div className="grid grid-cols-5 gap-2 h-[500px]">
-                    {!state.loadingRecentPosts && state.recentPosts.map((item, index) => {
-                        if (index === 0) {
-                            return (
-                                <Link className="col-span-3 row-span-2 rounded-lg h-full" onClick={() => { navigate(`/readpost/${item._id}`) }} to={`/readpost/${item._id}`}>
-                                    <div className="flex flex-col p-4 gap-2">
-                                        <span className="text-lg font-semibold">{item.title}</span>
-                                        <span className="text-xs">{item.author}</span>
-                                        <div className="bg-white rounded-lg p-2 truncate text-ellipsis h-full">
-                                            <span className="text-sm">{item.description}</span>
+                    {!state.loadingRecentPosts && state.recentPosts.map((item) => {
 
-                                        </div>
-                                        <div>
+                        return (
+                            <Link className="col-span-3 row-span-2 rounded-lg h-full" onClick={() => { navigate(`/readpost/${item._id}`) }} to={`/readpost/${item._id}`}>
+                                <div className="flex flex-col p-4 gap-2">
+                                    <span className="text-lg font-semibold">{item.title}</span>
+                                    <span className="text-xs">{item.author}</span>
+                                    <div className="bg-white rounded-lg p-2 truncate text-ellipsis h-full">
+                                        <span className="text-sm">{item.description}</span>
 
-
-                                        </div>
                                     </div>
+                                    <div>
 
-                                </Link>
-                            )
-                        } else {
-                            return (
-                                <Link className="rounded-lg h-[250px]" onClick={() => { navigate(`/readpost/${item._id}`) }} to={`/readpost/${item._id}`}>
-                                    <div className="flex flex-col p-4 gap-2 text-ellipsis truncate">
-                                        <span className="text-lg font-semibold">{item.title}</span>
-                                        <span className="text-xs">{item.author}</span>
-                                        <div className="bg-white rounded-lg p-2 truncate text-ellipsis h-full">
-                                            <span className="text-sm">{item.description}</span>
 
-                                        </div>
                                     </div>
+                                </div>
 
-                                </Link>
-                            )
-                        }
+                            </Link>
+                        )
+
                     })}
 
                 </div>
