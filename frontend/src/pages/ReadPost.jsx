@@ -143,9 +143,9 @@ const ReadPost = () => {
             const likeChange = state.alreadyLiked ? -1 : 1;
             const response = await updateLikeForPost(id, { likeChange }, signal);
             if (response) {
-                dispatch({ type: 'SET_LIKE_COUNT', payload: response.likeCount - state.likeCount });
-                dispatch({ type: 'SET_SINGLE_POST_DATA', payload: { likeCount: response.likeCount } });
+                dispatch({ type: 'SET_LIKE_COUNT', payload: likeChange });
                 dispatch({ type: 'SET_ALREADY_LIKED', payload: !state.alreadyLiked });
+                dispatch({ type: 'SET_SINGLE_POST_DATA', payload: { likeCount: response.likeCount } });
             }
         } catch (error) {
             if (axios.isCancel(error)) {
@@ -155,7 +155,7 @@ const ReadPost = () => {
             }
         }
 
-        //clean up the controller
+        // Clean up the controller
         return () => {
             controller.abort();
         }
@@ -164,13 +164,13 @@ const ReadPost = () => {
     return (
         <>
             {state.confirmModalIsOpen && (
-                <Modal  typeOfConfirmation="delete" onClose={handleCloseModal} onDelete={handleModalAndCallback} />
+                <Modal typeOfConfirmation="delete" onClose={handleCloseModal} onDelete={handleModalAndCallback} />
             )}
 
             <div className="flex flex-col rounded-lg gap-4 p-4">
                 <div className="flex flex-row items-center justify-between">
-                    <h3 className="text-2xl sm:text-sm md:text-2xl lg:text-2xl xl:text-2xl font-bold ">{state.singlePostData.title}</h3>
-                    <Heart className="hover:scale-110 cursor-pointer  hover:fill-rose-300 transition duration-300 ease-in" />
+                    <h3 className="text-2xl sm:text-sm md:text-2xl lg:text-2xl xl:text-2xl font-bold">{state.singlePostData.title}</h3>
+                    <Heart className="hover:scale-110 cursor-pointer hover:fill-rose-300 transition duration-300 ease-in" />
                 </div>
                 <div className="flex flex-row items-center gap-2">
                     <span>Posted by | </span>
@@ -182,10 +182,9 @@ const ReadPost = () => {
                 </div>
                 <div className="flex flex-row items-center justify-between gap-2">
                     <div className="flex flex-row items-center gap-2">
-                        <button onClick={handleLikeClick} className={`hover:scale-110 transition duration-300 ease-in ${state.alreadyLiked ? 'text-blue-500' : ''}`}>
+                        <button onClick={handleLikeClick} className={`hover:scale-110 transition duration-300 ease-in ${state.alreadyLiked ? 'text-blue-500' : ''}`} disabled={state.alreadyLiked}>
                             <ThumbsUp />
                         </button>
-                        
                         <span className="font-bold">Likes</span>
                         <span className="flex flex-row items-center justify-center p-2 w-10 bg-white rounded-full text-black font-bold">
                             {state.singlePostData.likeCount}
