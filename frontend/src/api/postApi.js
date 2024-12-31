@@ -107,7 +107,6 @@ export async function userAllowedToDeletePost(id, signal) {
 export async function getRecentPosts(maxPosts = 5, signal) {
     try {
         const response = await axios.get(`${URI}/recent/posts/${maxPosts}`, { signal })
-        console.log('response ::: ', response)
         if (response.status === 200) {
             return response.data
         }
