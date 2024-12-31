@@ -1,7 +1,7 @@
 import { deletePost } from "../api/postApi";
 import { getColor } from "../utils/Colors";
 import { getPost } from "../api/postApi";
-import { ThumbsUp, Heart, Trash2 } from 'lucide-react';
+import { ThumbsUp, BookmarkPlus, Trash2 } from 'lucide-react';
 import { toast, ToastContainer } from "react-toastify";
 import { updateLikeForPost } from "../api/likesApi";
 import { useEffect, useReducer } from "react";
@@ -17,7 +17,8 @@ const initialState = {
     alreadyLiked: false,
     bgColor: '',
     confirmModalIsOpen: false,
-    allowedToDeletePost: false
+    allowedToDeletePost: false,
+    savedToBookmarks: false
 }
 
 const reducer = (state, action) => {
@@ -32,6 +33,8 @@ const reducer = (state, action) => {
             return { ...state, confirmModalIsOpen: action.payload };
         case 'SET_BG_COLOR':
             return { ...state, bgColor: action.payload };
+        case 'SET_SAVED_TO_BOOKMARKS':
+            return { ...state, savedToBookmarks: action.payload };
         case 'SET_ALLOWED_TO_DELETE_POST':
             return { ...state, allowedToDeletePost: action.payload };
         default:
@@ -161,6 +164,16 @@ const ReadPost = () => {
         }
     }
 
+
+    //to do 
+    // // cehck if the post is saved to bookmarks
+
+
+    // save to bookmarks
+    const handleSaveToBookmarks = (toSaveBookMark) => {
+
+    }
+
     return (
         <>
             {state.confirmModalIsOpen && (
@@ -169,20 +182,25 @@ const ReadPost = () => {
 
             <div className="flex flex-col rounded-lg gap-4 p-4">
                 <div className="flex flex-row items-center justify-between">
-                    <h3 className="text-2xl sm:text-sm md:text-2xl lg:text-2xl xl:text-2xl font-bold">{state.singlePostData.title}</h3>
-                    <Heart className="hover:scale-110 cursor-pointer hover:fill-rose-300 transition duration-300 ease-in" />
+                    <h3 className="text-2xl sm:text-sm md:text-2xl lg:text-2xl xl:text-2xl font-semibold">{state.singlePostData.title}</h3>
+                    <div onClick={handleSaveToBookmarks} className="flex flex-row items-center text-xs bg-gray-200 rounded-lg p-2 cursor-pointer">
+                        <span className="text-xs">Bookmark</span>
+                        <BookmarkPlus />
+                    </div>
                 </div>
                 <div className="flex flex-row items-center gap-2">
-                    <span>Posted by | </span>
-                    <h5 className="font-bold italic">{state.singlePostData.author}</h5>
+                    <span className="text-xs" >by</span>
+                    <h5 className="text-xs font-medium">{state.singlePostData.author}</h5>
+                    <span className="text-gray-400">|</span>
+                    <span className="font-medium text-xs">{getDateString(state.singlePostData.dateCreated)}</span>
+
                 </div>
-                <span className="font-semibold text-sm">{getDateString(state.singlePostData.dateCreated)}</span>
                 <div className="flex flex-row gap-2 p-4 bg-white text-black rounded-lg">
                     <p>{state.singlePostData.description}</p>
                 </div>
                 <div className="flex flex-row items-center justify-between gap-2">
                     <div className="flex flex-row items-center gap-2">
-                        <button onClick={handleLikeClick} className={`hover:scale-110 transition duration-300 ease-in ${state.alreadyLiked ? 'text-blue-500' : ''}`} disabled={state.alreadyLiked}>
+                        <button onClick={handleLikeClick} className={`hover:scale-110 transition duration-300 ease-in ${state.alreadyLiked ? 'text-blue-500 cursor-default' : 'hover:cursor-pointer'}`} disabled={state.alreadyLiked}>
                             <ThumbsUp />
                         </button>
                         <span className="font-bold">Likes</span>

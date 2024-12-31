@@ -2,7 +2,7 @@ import { Flame } from 'lucide-react';
 import { getPosts } from '../api/postApi';
 import { ToastContainer, toast } from 'react-toastify';
 import { useEffect, useReducer } from 'react'
-import PostContainer from '../components/PostContainer';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const initialState = {
@@ -50,6 +50,7 @@ const reducer = (state, action) => {
 
 const TrendingPosts = () => {
 
+    const navigate = useNavigate();
     const [state, dispatch] = useReducer(reducer, initialState)
 
     useEffect(() => {
@@ -121,9 +122,30 @@ const TrendingPosts = () => {
 
 
 
-                <div className="flex flex-col gap-1 w-full">
-                    {state.posts.map((post, index) => {
-                        return (<PostContainer key={index} post={post} index={index} />)
+                <div className="flex flex-col gap-1 w-full h-[600px] overflow-y-scroll">
+                    {state.posts.map((item) => {
+                        return (
+                            <Link className="col-span-5 row-span-2 rounded-lg h-[200px] shadow-lg border border-gray-200" onClick={() => { navigate(`/readpost/${item._id}`) }} to={`/readpost/${item._id}`}>
+                                <div className="flex flex-col p-4 gap-2">
+                                    <span className="text-lg font-semibold">{item.title}</span>
+                                    <div className="flex flex-row items-center gap-1">
+                                    <span className="text-xs">by</span>
+                                    <span className="text-xs font-medium">{item.author}</span>
+
+                                    </div>
+                                    <div className="bg-white rounded-lg  truncate text-ellipsis h-full">
+                                        <span className="text-sm">{item.description}</span>
+                                    </div>
+                                </div>
+                                <div className="flex flex-row gap-2 p-4">
+                                    {item.tags.map((tag) => {
+                                        return (
+                                            <span className="text-xs bg-gray-200 rounded-lg p-2 capitalize">{tag}</span>
+                                        )
+                                    })}
+                                </div>
+                            </Link>
+                        )
                     })}
                 </div>
 
