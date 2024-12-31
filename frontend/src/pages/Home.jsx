@@ -91,17 +91,24 @@ const Home = () => {
                 </div>
 
                 {/* Grid */}
-                <div className="grid grid-cols-5 gap-2 h-[500px]">
+                <div className="grid grid-cols-5 gap-2 overflow-y-scroll h-[600px]">
                     {!state.loadingRecentPosts && state.recentPosts.map((item) => {
 
                         return (
-                            <Link className="col-span-5 row-span-2 rounded-lg h-full shadow-lg border border-gray-200" onClick={() => { navigate(`/readpost/${item._id}`) }} to={`/readpost/${item._id}`}>
+                            <Link className="col-span-5 row-span-2 rounded-lg h-[200px] shadow-lg border border-gray-200" onClick={() => { navigate(`/readpost/${item._id}`) }} to={`/readpost/${item._id}`}>
                                 <div className="flex flex-col p-4 gap-2">
                                     <span className="text-lg font-semibold">{item.title}</span>
                                     <span className="text-xs">{item.author}</span>
                                     <div className="bg-white rounded-lg  truncate text-ellipsis h-full">
                                         <span className="text-sm">{item.description}</span>
                                     </div>
+                                </div>
+                                <div className="flex flex-row gap-2 p-4">
+                                    {item.tags.map((tag) => {
+                                        return (
+                                            <span className="text-xs bg-gray-200 rounded-lg p-2 capitalize">{tag}</span>
+                                        )
+                                    })}
                                 </div>
                             </Link>
 
