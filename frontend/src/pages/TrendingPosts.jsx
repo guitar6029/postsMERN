@@ -109,14 +109,12 @@ const TrendingPosts = () => {
 
                 <div className="flex flex-row justify-between">
                     <div className="flex flex-row items-center gap-4">
-                        <div>
-                            <select onChange={(e) => dispatch({ type: "SET_SORT_BY", payload: e.target.value })} className="p-2 rounded hover:cursor-pointer" name="sortBy" id="sortBy">
-                                <option value="dateCreated">Date Created</option>
-                                <option value="title">Title</option>
-                                <option value="author">Author</option>
-                                <option value="likesCount">Likes</option>
-                            </select>
-                        </div>
+                        <select onChange={(e) => dispatch({ type: "SET_SORT_BY", payload: e.target.value })} className="p-2 rounded hover:cursor-pointer border border-gray-300 focus:border-[#424068]" name="sortBy" id="sortBy">
+                            <option value="dateCreated">Date Created</option>
+                            <option value="title">Title</option>
+                            <option value="author">Author</option>
+                            <option value="likesCount">Likes</option>
+                        </select>
                     </div>
                 </div>
 
@@ -129,8 +127,8 @@ const TrendingPosts = () => {
                                 <div className="flex flex-col p-4 gap-2">
                                     <span className="text-lg font-semibold">{item.title}</span>
                                     <div className="flex flex-row items-center gap-1">
-                                    <span className="text-xs">by</span>
-                                    <span className="text-xs font-medium">{item.author}</span>
+                                        <span className="text-xs">by</span>
+                                        <span className="text-xs font-medium">{item.author}</span>
 
                                     </div>
                                     <div className="bg-white rounded-lg  truncate text-ellipsis h-full">
