@@ -16,7 +16,7 @@ import TrendingPosts from './pages/TrendingPosts';
 import ProtectedRoute from './components/ProtectedRoute'; // Import the ProtectedRoute component
 import axios from 'axios';
 import { UserProvider } from './context/userContext';
-
+import { ToastContainer, toast } from 'react-toastify';
 function App() {
   // Watch axios headers authorization
   useEffect(() => {
@@ -28,7 +28,6 @@ function App() {
 
   return (
     <UserProvider>
-     
       <Routes>
         {/* The root path "/" will render Landing component */}
         <Route path="/" element={<Landing />} />
@@ -46,6 +45,7 @@ function App() {
           <Route path="*" element={<Page404 />} />
         </Route>
       </Routes>
+     <ToastContainer />
     </UserProvider>
   );
 }

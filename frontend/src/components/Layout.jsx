@@ -1,6 +1,6 @@
 import NavBar from "./Navbar";
 import { Outlet } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+// import { ToastContainer } from "react-toastify";
 import Footer from "./Footer";
 
 const Layout = () => {
@@ -11,7 +11,7 @@ const Layout = () => {
             </header>
             <main className="flex-grow p-4">
                 <Outlet />
-                <ToastContainer
+                {/* <ToastContainer
                     position="bottom-right"
                     autoClose={5000}
                     hideProgressBar={false}
@@ -21,11 +21,8 @@ const Layout = () => {
                     pauseOnFocusLoss
                     draggable
                     pauseOnHover
-                />
+                /> */}
             </main>
-            {/* <footer className="w-full">
-                <Footer />
-            </footer> */}
         </div>
     );
 };

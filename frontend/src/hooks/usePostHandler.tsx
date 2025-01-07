@@ -6,6 +6,7 @@ import { useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { userAllowedToDeletePost, updatePost } from "../api/postApi";
 import axios from "axios";
+import { useUserContext } from "../context/userContext";
 
 const initialState = {
     allowedToDeletePost: false,
@@ -60,6 +61,7 @@ const usePostHandler = () => {
 
     const [state, dispatch] = useReducer(reducer, initialState);
     const navigate = useNavigate();
+    const { handleToasts } = useUserContext();
 
 
     useEffect(() => {
@@ -76,7 +78,8 @@ const usePostHandler = () => {
                 }
             } catch (error) {
                 dispatch({ type: "SET_ALLOWED_TO_DELETE_POST", payload: false });
-                toast.error('Error deleting post!', { position: "top-right" });
+                handleToasts({type: 'error', message: 'Error deleting post!'});
+               
             }
         }
 
@@ -108,16 +111,16 @@ const usePostHandler = () => {
         try {
             const response = await deletePost(state.id, signal);
             if (response && response.status === 200) {
-                toast.success('Post deleted successfully!', { position: "top-right" });
+                handleToasts({type: 'success', message: 'Post deleted successfully!'});
                 navigate('/home');
             } else {
-                toast.error('Error deleting post!', { position: "top-right" });
+                handleToasts({type: 'error', message: 'Error deleting post!'});
             }
         } catch (error) {
             if (axios.isCancel(error)) {
-                toast.error('Error deleting post!', { position: "top-right" });
+                handleToasts({type: 'error', message: 'Error deleting post!'});
             } else {
-                toast.error('Error deleting post!', { position: "top-right" });
+                handleToasts({type: 'error', message: 'Error deleting post!'});
             }
         }
     }
@@ -129,7 +132,6 @@ const usePostHandler = () => {
         async function getPostData() {
 
             if (state.id) {
-                console.log('id for getting post data is', state.id)
                 try {
                     const postFetch = await getPost(state.id, signal);
                     if (postFetch) {
@@ -141,9 +143,9 @@ const usePostHandler = () => {
                     }
                 } catch (error) {
                     if (axios.isCancel(error)) {
-                        toast.error('Error fetching post!', { position: "top-right" });
+                        handleToasts({type: 'error', message: 'Error fetching post!'});
                     } else {
-                        toast.error('Error fetching post!', { position: "top-right" });
+                        handleToasts({type: 'error', message: 'Error fetching post!'});
                     }
                 }
 
@@ -185,35 +187,46 @@ const usePostHandler = () => {
             description: state.editText
         }
         if (!updatePostObj.title || !updatePostObj.description) {
-            toast.error('Title and description are required!', { position: "top-right" });
+            handleToasts({type: 'error', message: 'Title and description are required!'});
             return;
         }
 
         try {
             const response = await updatePost(postId, updatePostObj, signal);
             if (response && response === 200) {
-                toast.success('Post updated successfully!', { position: "top-right" });
+                handleToasts({type: 'success', message: 'Post updated successfully!'});
                 dispatch({ type: 'SET_EDIT_MODE', payload: false });
                 // make the default text and titel of the updated post
                 dispatch({ type: 'SET_SINGLE_POST_DATA', payload: { title: state.editTitle, description: state.editText } }); 
                 dispatch({ type: 'SET_EDIT_TITLE', payload: state.editTitle }); 
                 dispatch({ type: 'SET_EDIT_TEXT', payload: state.editText });
             } else {
-                toast.error('Error updating post!', { position: "top-right" });
+                handleToasts({type: 'error', message: 'Error updating post!'});
+                
             }
         } catch (error) {
             if (axios.isCancel(error)) {
-                toast.error('Error updating post!', { position: "top-right" });
+                handleToasts({type: 'error', message: 'Error updating post!'});
+                
             } else {
-                toast.error('Error updating post!', { position: "top-right" });
+                handleToasts({type: 'error', message: 'Error updating post!'});
+                
             }
         }
     }
 
 
-    const handleEditModeClick = (isEditMode) => {
-        dispatch({ type: 'SET_EDIT_MODE', payload: isEditMode });
+    const handleEditModeClick = () => {
+        const isEditMode = !state.editMode;
+        if (isEditMode) {
+            dispatch({ type: 'SET_EDIT_MODE', payload: isEditMode });
+        } else {
+            // Reset changes first, then turn off edit mode
+            dispatch({ type: "RESET_CHANGES" });
+            dispatch({ type: 'SET_EDIT_MODE', payload: isEditMode });
+        }
     }
+    
 
     const handleLikeClick = async () => {
         const controller = new AbortController();
@@ -229,9 +242,11 @@ const usePostHandler = () => {
             }
         } catch (error) {
             if (axios.isCancel(error)) {
-                toast.error('Error!', { position: "top-right" });
+                handleToasts({type: 'error', message: 'Error!'});
+                
             } else {
-                console.error("Error fetching data:", error);
+                handleToasts({type: 'error', message: 'Error!'});
+                
             }
         }
 

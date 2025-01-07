@@ -3,7 +3,6 @@ import usePostHandler from "../hooks/usePostHandler";
 import { useParams } from "react-router-dom";
 import { useRef, useEffect } from "react";
 import { ThumbsUp, BookmarkPlus, Trash2, PencilLine } from 'lucide-react';
-import { ToastContainer } from "react-toastify";
 import Modal from "../components/modal/Modal";
 
 const ReadPost = () => {
@@ -56,8 +55,9 @@ const ReadPost = () => {
                     <div className="flex flex-row gap-2">
                         {state.ownerOfPost && (
 
-                            <div onClick={() => handleEditModeClick(true)} className="flex flex-row items-center cursor-pointer text-sm p-2 bg-gray-200 rounded-lg">
-                                <span>Edit</span>
+                            <div onClick={() => handleEditModeClick()} className="flex flex-row gap-2 items-center cursor-pointer text-sm p-2 bg-gray-200 rounded-lg">
+                                <span>Edit Mode : </span>
+                                <span className="font-bold">{state.editMode ? "ON" : "OFF"}</span>
                                 <PencilLine />
                             </div>
                         )}
@@ -122,7 +122,6 @@ const ReadPost = () => {
                     )}
                 </div>
             </div>
-            <ToastContainer />
         </>
     );
 }

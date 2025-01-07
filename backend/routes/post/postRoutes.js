@@ -87,8 +87,6 @@ postRoutes.route("/posts/:id").put(authMiddleware, async (request, response) => 
             updatedAt: new Date()  // Update the updatedAt property
         };
 
-        console.log("Updating post with data:", updateData); // Debug log
-
         let result = await db.collection("posts").updateOne(
             { _id: new ObjectId(request.params.id) },
             { $set: updateData }
@@ -98,7 +96,6 @@ postRoutes.route("/posts/:id").put(authMiddleware, async (request, response) => 
             return response.status(404).json({ error: "Post not found" });
         }
 
-        console.log("Update successful:", result); // Debug log
         response.status(200).json({ success: true, data: result });
     } catch (error) {
         console.error("Error occurred while updating the post:", error);

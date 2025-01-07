@@ -98,39 +98,9 @@ const Account = () => {
                     </div>
 
                 </div>
-                {/* <div className="flex flex-col gap-4">
-                    <div className="flex flex-row justify-between">
-                        <h2 className="text-2xl font-extrabold">Your Posts</h2>
-
-                        <div className="flex flex-row items-center gap-2 p-2 bg-slate-50 rounded-lg">
-                            <Grid3x3 className="hover-sky-600-text" width={20} onClick={() => dispatch({ type: 'SET_POST_VIEW', payload: 'grid' })} />
-                            |
-                            <List className="hover-sky-600-text" width={20} onClick={() => dispatch({ type: 'SET_POST_VIEW', payload: 'list' })} />
-                        </div>
-
-                    </div>
-                    {state.loading && <p>Loading...</p>}
-                    {state.postView === 'list' && (
-                        <div className="flex flex-col gap-1 w-full">
-                        {state.posts.map((post) => (
-                            <PostContainer key={post._id} post={post} index={state.posts.indexOf(post)} viewType={state.postView} />
-                        ))}
-
-                    </div>
-                    )}
-                    {state.postView === 'grid' && (
-                        <div className="grid grid-cols-3 gap-2">
-                        {state.posts.map((post) => (
-                            <PostContainer key={post._id} post={post} index={state.posts.indexOf(post)} viewType={state.postView} />
-                        ))}
-
-                    </div>
-                    )}
-                    
-                    
-                </div> */}
+               
             </div>
-            <ToastContainer />
+        
         </>
         );
 }
