@@ -1,22 +1,23 @@
 import './App.css';
 import './custom-classes.css';
 import { Routes, Route } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import { useEffect } from 'react';
-import Home from './pages/Home';
-import Page404 from './pages/Page404';
-import Landing from './pages/Landing';
+import { UserProvider } from './context/userContext';
 import Account from './pages/Account';
-import ReadPost from './pages/ReadPost';
-import CreatePost from './pages/CreatePost';
+import axios from 'axios';
 import CreateNewUser from './pages/CreateNewUser';
+import CreatePost from './pages/CreatePost';
+import Home from './pages/Home';
+import Landing from './pages/Landing';
+import Layout from './components/Layout';
+import Page404 from './pages/Page404';
+import ProtectedRoute from './components/ProtectedRoute'; // Import the ProtectedRoute component
+import ReadPost from './pages/ReadPost';
 import Settings from './pages/Settings';
 import Subscription from './pages/Subscription';
-import Layout from './components/Layout';
 import TrendingPosts from './pages/TrendingPosts';
-import ProtectedRoute from './components/ProtectedRoute'; // Import the ProtectedRoute component
-import axios from 'axios';
-import { UserProvider } from './context/userContext';
-import { ToastContainer, toast } from 'react-toastify';
+
 function App() {
   // Watch axios headers authorization
   useEffect(() => {

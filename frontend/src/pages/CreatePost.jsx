@@ -1,6 +1,6 @@
 import { createPost } from '../api/postApi';
 import { StickyNote } from 'lucide-react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast} from 'react-toastify';
 import { useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -82,7 +82,6 @@ const CreatePost = () => {
                 </div>
             </div>
         </form>
-        <ToastContainer />
     </>);
 }
 

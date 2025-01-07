@@ -78,7 +78,7 @@ const usePostHandler = () => {
                 }
             } catch (error) {
                 dispatch({ type: "SET_ALLOWED_TO_DELETE_POST", payload: false });
-                handleToasts({type: 'error', message: 'Error deleting post!'});
+                handleToasts({type: 'error', message: 'Error deleting post! Please try again later 😲 '});
                
             }
         }
@@ -111,16 +111,16 @@ const usePostHandler = () => {
         try {
             const response = await deletePost(state.id, signal);
             if (response && response.status === 200) {
-                handleToasts({type: 'success', message: 'Post deleted successfully!'});
+                handleToasts({type: 'success', message: 'Post deleted successfully! 👍'});
                 navigate('/home');
             } else {
-                handleToasts({type: 'error', message: 'Error deleting post!'});
+                handleToasts({type: 'error', message: 'Error deleting post! 😲'});
             }
         } catch (error) {
             if (axios.isCancel(error)) {
-                handleToasts({type: 'error', message: 'Error deleting post!'});
+                handleToasts({type: 'error', message: 'Error deleting post! 😲'});
             } else {
-                handleToasts({type: 'error', message: 'Error deleting post!'});
+                handleToasts({type: 'error', message: 'Error deleting post! 😲'});
             }
         }
     }
@@ -143,9 +143,9 @@ const usePostHandler = () => {
                     }
                 } catch (error) {
                     if (axios.isCancel(error)) {
-                        handleToasts({type: 'error', message: 'Error fetching post!'});
+                        handleToasts({type: 'error', message: 'Error fetching post! 😲'});
                     } else {
-                        handleToasts({type: 'error', message: 'Error fetching post!'});
+                        handleToasts({type: 'error', message: 'Error fetching post! 😲'});
                     }
                 }
 
@@ -187,29 +187,29 @@ const usePostHandler = () => {
             description: state.editText
         }
         if (!updatePostObj.title || !updatePostObj.description) {
-            handleToasts({type: 'error', message: 'Title and description are required!'});
+            handleToasts({type: 'error', message: 'Title and description are required! 📝'});
             return;
         }
 
         try {
             const response = await updatePost(postId, updatePostObj, signal);
             if (response && response === 200) {
-                handleToasts({type: 'success', message: 'Post updated successfully!'});
+                handleToasts({type: 'success', message: 'Post updated successfully! 👏'});
                 dispatch({ type: 'SET_EDIT_MODE', payload: false });
                 // make the default text and titel of the updated post
                 dispatch({ type: 'SET_SINGLE_POST_DATA', payload: { title: state.editTitle, description: state.editText } }); 
                 dispatch({ type: 'SET_EDIT_TITLE', payload: state.editTitle }); 
                 dispatch({ type: 'SET_EDIT_TEXT', payload: state.editText });
             } else {
-                handleToasts({type: 'error', message: 'Error updating post!'});
+                handleToasts({type: 'error', message: 'Error updating post! 😲'});
                 
             }
         } catch (error) {
             if (axios.isCancel(error)) {
-                handleToasts({type: 'error', message: 'Error updating post!'});
+                handleToasts({type: 'error', message: 'Error updating post! 😲 '});
                 
             } else {
-                handleToasts({type: 'error', message: 'Error updating post!'});
+                handleToasts({type: 'error', message: 'Error updating post! 😲'});
                 
             }
         }
@@ -242,10 +242,10 @@ const usePostHandler = () => {
             }
         } catch (error) {
             if (axios.isCancel(error)) {
-                handleToasts({type: 'error', message: 'Error!'});
+                handleToasts({type: 'error', message: 'Error! 😲'});
                 
             } else {
-                handleToasts({type: 'error', message: 'Error!'});
+                handleToasts({type: 'error', message: 'Error! 😲'});
                 
             }
         }

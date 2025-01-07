@@ -1,9 +1,8 @@
 import { getGreeting } from '../utils/StringUtils';
 import { getRecentPosts } from '../api/postApi';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useEffect, useReducer } from 'react'
 import { useUserContext } from '../context/userContext';
-import { getColor } from '../utils/Colors';
 import { Link, useNavigate } from "react-router-dom";
 import { BookOpenText } from 'lucide-react';
 
@@ -28,15 +27,7 @@ const Home = () => {
 
     const { user } = useUserContext()
     const [state, dispatch] = useReducer(reducer, initialState)
-
-
     const navigate = useNavigate();
-
-
-    const getBgColor = (index) => {
-        return { backgroundColor: getColor(index) };
-    };
-
 
     useEffect(() => {
         const controller = new AbortController();
