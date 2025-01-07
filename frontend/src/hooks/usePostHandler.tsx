@@ -69,17 +69,20 @@ const usePostHandler = () => {
         const signal = controller.signal;
 
         const checkIfCanDeletePost = async () => {
-            try {
-                const response = await userAllowedToDeletePost(state.id, signal);
-                if (response && response.status === 200) {
-                    dispatch({ type: "SET_ALLOWED_TO_DELETE_POST", payload: true });
-                    dispatch({ type: "SET_OWNER_OF_POST", payload: true });
-                    dispatch({ type: "SET" })
+            if (state.id) {
+                try {
+                    const response = await userAllowedToDeletePost(state.id, signal);
+                    if (response && response.status === 200) {
+                        dispatch({ type: "SET_ALLOWED_TO_DELETE_POST", payload: true });
+                        dispatch({ type: "SET_OWNER_OF_POST", payload: true });
+                        dispatch({ type: "SET" })
+                    }
+                } catch (error) {
+                    dispatch({ type: "SET_ALLOWED_TO_DELETE_POST", payload: false });
+                    handleToasts({type: 'error', message: 'Error deleting post! Please try again later 😲 '});
+                   
                 }
-            } catch (error) {
-                dispatch({ type: "SET_ALLOWED_TO_DELETE_POST", payload: false });
-                handleToasts({type: 'error', message: 'Error deleting post! Please try again later 😲 '});
-               
+
             }
         }
 
@@ -107,22 +110,25 @@ const usePostHandler = () => {
     const handleDeletePost = async () => {
         const controller = new AbortController();
         const signal = controller.signal;
+        if (state.id) {
+            try {
+                const response = await deletePost(state.id, signal);
+                if (response && response.status === 200) {
+                    handleToasts({type: 'success', message: 'Post deleted successfully! 👍'});
+                    navigate('/home');
+                } else {
+                    handleToasts({type: 'error', message: 'Error deleting post! 😲'});
+                }
+            } catch (error) {
+                if (axios.isCancel(error)) {
+                    handleToasts({type: 'error', message: 'Error deleting post! 😲'});
+                } else {
+                    handleToasts({type: 'error', message: 'Error deleting post! 😲'});
+                }
+            }
 
-        try {
-            const response = await deletePost(state.id, signal);
-            if (response && response.status === 200) {
-                handleToasts({type: 'success', message: 'Post deleted successfully! 👍'});
-                navigate('/home');
-            } else {
-                handleToasts({type: 'error', message: 'Error deleting post! 😲'});
-            }
-        } catch (error) {
-            if (axios.isCancel(error)) {
-                handleToasts({type: 'error', message: 'Error deleting post! 😲'});
-            } else {
-                handleToasts({type: 'error', message: 'Error deleting post! 😲'});
-            }
         }
+
     }
 
     useEffect(() => {
@@ -180,6 +186,10 @@ const usePostHandler = () => {
     const handleUpdatePost = async () => {
         const controller = new AbortController();
         const signal = controller.signal;
+
+        if (!state.id){
+            return 
+        }
 
         const postId = state.id;
         const updatePostObj = {
