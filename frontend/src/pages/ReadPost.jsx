@@ -11,7 +11,19 @@ const ReadPost = () => {
     const params = useParams();
     const id = params.id;
 
-    const { state, handleEditModeUpdateText, resetChangesForEditPost, setIdForPost, handleLikeClick, handleModalAndCallback, handleCloseModal, confirmModalForPostDelete, handleEditModeClick, handleEditModeUpdateTitle, handleUpdatePost } = usePostHandler()
+    const { 
+        state, 
+        handleEditModeUpdateText, 
+        resetChangesForEditPost, 
+        setIdForPost, 
+        handleLikeClick, 
+        handleModalAndCallback, 
+        handleCloseModal, 
+        confirmModalForPostDelete, 
+        handleEditModeClick, 
+        handleEditModeUpdateTitle, 
+        handleUpdatePost 
+    } = usePostHandler()
 
     useEffect(() => {
         setIdForPost(id);
@@ -72,7 +84,7 @@ const ReadPost = () => {
 
                 </div>
                 {state.editMode ? (
-                    <textarea value={state.editText} className="min-h-[500px] rounded-lg p-1 " onChange={(e) => handleEditModeUpdateText(e.target.value)} required maxLength={1000} type="text" name="description" id="description" />
+                    <textarea value={state.editText} className="min-h-[300px] rounded-lg p-1 " onChange={(e) => handleEditModeUpdateText(e.target.value)} required maxLength={1000} type="text" name="description" id="description" />
                 ) :
                     <div className="flex flex-row gap-2 p-4 bg-white text-black rounded-lg">
                         <p>{state.singlePostData.description}</p>
@@ -81,10 +93,13 @@ const ReadPost = () => {
                 }
                 <div className="flex flex-row items-center justify-between gap-2">
                     {state.editMode ? (
+                        <div className="flex flex-col gap-2">
+                            <span>Character Limit {state.editText.length}/1000</span>
                         <div className="flex flex-row items-center gap-2">
                             <button className="p-2 bg-teal-100 rounded-lg hover:bg-teal-500 transition duration-300 ease-in-out hover:text-white disabled:opacity-50" onClick={handleUpdatePost}>Update Post</button>
                             <button onClick={resetChangesForEditPost} className="p-2 rounded-lg bg-green-100">Reset Changes</button>
 
+                        </div>
                         </div>
                     ) : (
                         <div className="flex flex-row items-center gap-2">

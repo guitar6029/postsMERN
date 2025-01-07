@@ -18,7 +18,8 @@ const initialState = {
     editText: '',
     editTitle: '',
     singlePostData: {},
-    id: null
+    id: null,
+    maxCharacterLimit: 1000
 }
 
 
@@ -97,8 +98,6 @@ const usePostHandler = () => {
     }
 
     const resetChangesForEditPost = () => {
-        console.log("current text is ", state.editText)
-        console.log('current title is ', state.editTitle)
         dispatch({ type: 'RESET_CHANGES' });
     }
 
@@ -195,6 +194,10 @@ const usePostHandler = () => {
             if (response && response === 200) {
                 toast.success('Post updated successfully!', { position: "top-right" });
                 dispatch({ type: 'SET_EDIT_MODE', payload: false });
+                // make the default text and titel of the updated post
+                dispatch({ type: 'SET_SINGLE_POST_DATA', payload: { title: state.editTitle, description: state.editText } }); 
+                dispatch({ type: 'SET_EDIT_TITLE', payload: state.editTitle }); 
+                dispatch({ type: 'SET_EDIT_TEXT', payload: state.editText });
             } else {
                 toast.error('Error updating post!', { position: "top-right" });
             }
