@@ -60,6 +60,8 @@ postRoutes.route("/posts").post(authMiddleware, userPropertiesMiddleware, attach
             description: request.body.description,
             creatorsID: request.userId,
             dateCreated: new Date(),
+            createdAt: new Date(), // Include createdAt 
+            updatedAt: new Date(),
             likeCount: 0
         };
         let result = await db.collection("posts").insertOne(postObject);
@@ -70,6 +72,7 @@ postRoutes.route("/posts").post(authMiddleware, userPropertiesMiddleware, attach
 });
 
 // 4. Update a post
+
 postRoutes.route("/posts/:id").put(authMiddleware, async (request, response) => {
     try {
         let db = database.getDataBase();
@@ -78,20 +81,31 @@ postRoutes.route("/posts/:id").put(authMiddleware, async (request, response) => 
             return response.status(400).json({ error: "Invalid ID format" });
         }
 
+        // Ensure the `updatedAt` field is included in the updateData
+        const updateData = {
+            ...request.body,
+            updatedAt: new Date()  // Update the updatedAt property
+        };
+
+        console.log("Updating post with data:", updateData); // Debug log
+
         let result = await db.collection("posts").updateOne(
             { _id: new ObjectId(request.params.id) },
-            { $set: request.body }
+            { $set: updateData }
         );
 
         if (result.matchedCount === 0) {
             return response.status(404).json({ error: "Post not found" });
         }
 
+        console.log("Update successful:", result); // Debug log
         response.status(200).json({ success: true, data: result });
     } catch (error) {
+        console.error("Error occurred while updating the post:", error);
         response.status(500).json({ error: "An error occurred while updating the post", details: error.message });
     }
 });
+
 
 // 5. Delete a post
 postRoutes.route("/posts/:id").delete(authMiddleware, async (request, response) => {

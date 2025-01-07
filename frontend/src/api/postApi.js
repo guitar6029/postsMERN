@@ -51,12 +51,17 @@ export async function createPost(postOject, signal) {
 }
 
 export async function updatePost(id, data, signal) {
+    console.log('id is', id)
+    console.log('data is', data)
     try {
-        const response = await axios.post(`http://localhost:3000/posts/${id}`, data, { signal })
-
+        const response = await axios.put(`http://localhost:3000/posts/${id}`, data, { signal });
+        console.log('frontend response ::', response);
+        if (response.status === 200) {
+            console.log('ok udated the post')
+            return response.status;
+        }
     } catch (error) {
-        console.error("Error fetching data:", error)
-
+        console.error("Error fetching data:", error);
     }
 }
 
