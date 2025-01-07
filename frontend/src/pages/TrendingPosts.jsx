@@ -121,9 +121,9 @@ const TrendingPosts = () => {
 
 
                 <div className="flex flex-col gap-1 w-full h-[600px] overflow-y-scroll">
-                    {state.posts && state.posts.map((item) => {
+                    {state.posts && state.posts.map((item, index) => {
                         return (
-                            <Link className="col-span-5 row-span-2 rounded-lg h-[200px] shadow-lg border border-gray-200" onClick={() => { navigate(`/readpost/${item._id}`) }} to={`/readpost/${item._id}`}>
+                            <Link key={index} className="col-span-5 row-span-2 rounded-lg h-[200px] shadow-lg border border-gray-200" onClick={() => { navigate(`/readpost/${item._id}`) }} to={`/readpost/${item._id}`}>
                                 <div className="flex flex-col p-4 gap-2">
                                     <span className="text-lg font-semibold">{item.title}</span>
                                     <div className="flex flex-row items-center gap-1">
@@ -136,9 +136,9 @@ const TrendingPosts = () => {
                                     </div>
                                 </div>
                                 <div className="flex flex-row gap-2 p-4">
-                                    {item.tags &&item.tags.map((tag) => {
+                                    {item.tags &&item.tags.map((tag, index) => {
                                         return (
-                                            <span className="text-xs bg-gray-200 rounded-lg p-2 capitalize">{tag}</span>
+                                            <span key={index} className="text-xs bg-gray-200 rounded-lg p-2 capitalize">{tag}</span>
                                         )
                                     })}
                                 </div>
