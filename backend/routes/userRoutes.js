@@ -161,7 +161,8 @@ userRoutes.route("/users/login").post(async (request, response) => {
             if (isPasswordCorrect) {
                 //jwt token
                 const token = jwt.sign({ userId: existingUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' }); 
-                const { password, ...userWithoutPassword } = existingUser; 
+                const { password, ...userWithoutPassword } = existingUser;
+                console.log("userWithoutPassword", userWithoutPassword); 
                 return response.json({ success: true, token, user: userWithoutPassword });
             } else {
                 return response.status(400).json({ error: "Credentials do not match" });

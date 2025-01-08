@@ -6,6 +6,7 @@ const posts = require("./routes/post/postRoutes");
 const likesRoutes = require('./routes/likesRoutes');
 const userRoutes = require('./routes/userRoutes');
 const recentRoutes = require("./routes/post/recentRoutes");
+const bookmarkedRoutes = require("./routes/bookmarked/bookmarked");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +20,7 @@ app.use(posts);
 app.use(likesRoutes);
 app.use(userRoutes);
 app.use(recentRoutes);
+app.use(bookmarkedRoutes);
 
 // Start server
 const startServer = async () => {
