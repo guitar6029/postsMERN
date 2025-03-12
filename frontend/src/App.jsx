@@ -1,7 +1,7 @@
 import './App.css';
 import './custom-classes.css';
 import { Routes, Route } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer} from 'react-toastify';
 import { useEffect } from 'react';
 import { UserProvider } from './context/userContext';
 import Account from './pages/Account';

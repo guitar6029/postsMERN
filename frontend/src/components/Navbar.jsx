@@ -20,11 +20,6 @@ const NavBar = () => {
         navigate('/');
     }
 
-    const handleGoToProfile = () => {
-        setShowDropdown(false);
-        //navigate to /account
-        navigate("/account")
-    }
 
     const handleRedirect = (path) => {
         switch (path) {
