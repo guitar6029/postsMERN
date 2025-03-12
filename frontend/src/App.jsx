@@ -17,7 +17,6 @@ import ReadPost from './pages/ReadPost';
 import Settings from './pages/Settings';
 import Subscription from './pages/Subscription';
 import TrendingPosts from './pages/TrendingPosts';
-import { PostProvider } from './context/postContext';
 
 function App() {
   // Watch axios headers authorization
@@ -40,7 +39,7 @@ function App() {
           <Route path="trending" element={<ProtectedRoute><TrendingPosts /></ProtectedRoute>} />
           <Route path="account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
           <Route path="createpost" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
-          <Route path="readpost/:id" element={<ProtectedRoute><PostProvider><ReadPost /></PostProvider></ProtectedRoute>} />
+          <Route path="readpost/:id" element={<ProtectedRoute><ReadPost /></ProtectedRoute>} />
           ,<Route path="/subscription" element={<ProtectedRoute><Subscription /></ProtectedRoute> } />
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           {/* Add a wildcard route to catch all other paths */}
