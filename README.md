@@ -50,5 +50,5 @@ npm run start
 npm install
 npm run dev
 ```
-These instructions should make it easy for fellow developers to get your project up and running. Great job on providing clear and concise guidance! 😊 🌟 If you have any further questions or need additional details, feel free to ask!
+
 
